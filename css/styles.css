@@ -11,9 +11,9 @@
   --color-secondary:#4a4a4a;  /* dark text */
   --color-muted:    #7f8c8d;  /* grey */
   --color-link:     var(--color-primary);
-  --font-base:      'Dancing Script', cursive;
-  --font-heading:   'Dancing Script', cursive;
-  --font-script:    'Dancing Script', cursive;
+  --font-base:      "Playpen Sans", cursive;
+  --font-heading:   "Playpen Sans", cursive;
+  --font-script:    "Playpen Sans", cursive;
 }
 /* nav‐link underline for the active item */
 /* Reserve space for the underline */
