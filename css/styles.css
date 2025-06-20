@@ -1,0 +1,466 @@
+/*--------------------------------------
+  Minimalistic Wedding Site Styles
+---------------------------------------*/
+
+/* 1) Variables */
+:root {
+  --color-bg:       #fafafa;
+  --color-offwhite: #f5f5f5;
+  --color-white:    #ffffff;
+  --color-primary:  #ba5f1e;  /* warm accent */
+  --color-secondary:#4a4a4a;  /* dark text */
+  --color-muted:    #7f8c8d;  /* grey */
+  --color-link:     var(--color-primary);
+  --font-base:      'Dancing Script', cursive;
+  --font-heading:   'Dancing Script', cursive;
+  --font-script:    'Dancing Script', cursive;
+}
+/* nav‐link underline for the active item */
+/* Reserve space for the underline */
+.navbar .nav-link {
+  position: relative;
+  padding-bottom: .25rem;
+}
+
+/* Underline for the active link */
+.navbar .nav-link.active::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 2px;                       /* thickness */
+  background-color: #ba5f1e;         /* your orange accent */
+  border-radius: 1px;
+}
+
+/* (Optional) Also show on hover/focus */
+.navbar .nav-link:hover::after,
+.navbar .nav-link:focus::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 2px;
+  background-color: #ba5f1e;
+  border-radius: 1px;
+}
+/* 2) Reset & Base */
+*,
+*::before,
+*::after {
+  margin: 0; padding: 0;
+  box-sizing: border-box;
+}
+body {
+  font-family: var(--font-base);
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--color-secondary);
+  background: var(--color-bg);
+  -webkit-text-size-adjust: 100%;
+}
+a {
+  color: var(--color-link);
+  text-decoration: none;
+  transition: color .3s;
+}
+a:hover,
+a:focus {
+  color: darken(var(--color-link), 10%);
+  outline: none;
+}
+
+/* 3) Intro Text */
+.intro-text {
+  padding: 4rem 1rem;
+  background: var(--color-offwhite);
+  text-align: center;
+}
+.intro-text h1 {
+  font-family: var(--font-script);
+  font-size: clamp(3rem, 8vw, 6rem);
+  color: var(--color-primary);
+  line-height: 1.2;
+  margin-bottom: .5rem;
+}
+.intro-text p {
+  font-size: clamp(1rem, 2.5vw, 1.25rem);
+  color: var(--color-secondary);
+}
+
+/* 4) Fixed Navigation */
+.navigation {
+  position: sticky;
+  top: calc(4rem + 1rem);   /* same offset you used for the fixed version */
+  left: 0; right: 0;
+  background: transparent;   /* no more solid block behind it */
+  padding: .5rem 2rem;       /* small vertical padding, wider horizontal */
+  z-index: 100;              /* stay on top of content */
+  box-shadow: none;          /* remove any shadow */
+}
+
+/* Center the nav items within a max-width container */
+.header-nav {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Primary links on the left */
+.primary-nav {
+  list-style: none;
+  display: flex;
+  gap: 1.5rem;
+}
+
+/* Action links on the right */
+.member-actions {
+  list-style: none;
+  display: flex;
+  gap: 1rem;
+}
+
+/* Link styling */
+.primary-nav a,
+.member-actions a {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  text-transform: uppercase;
+  color: var(--color-secondary);
+  font-size: 1.6rem;
+  transition: color .3s;
+}
+.primary-nav a:hover,
+.member-actions a:hover {
+  color: var(--color-primary);
+}
+
+/* RSVP button in the menu */
+.btn-white {
+  border: 2px solid var(--color-secondary);
+  border-radius: 40px;
+  padding: .25rem .75rem;
+  color: var(--color-secondary);
+}
+.btn-white:hover {
+  background: var(--color-secondary);
+  color: #fff;
+}
+
+/* Remove any top margin push for the rest of the page */
+.site-content {
+  margin-top: 0;
+}
+/* 6) Sections & Headings */
+.section-padding {
+  padding: 4rem 1rem;
+}
+h3.header {
+  font-family: var(--font-heading);
+  font-size: 1.5rem;
+  color: var(--color-primary);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+/* 7) Invitation */
+#invitation p {
+  max-width: 600px;
+  margin: .5rem auto;
+  color: var(--color-muted);
+  line-height: 1.7;
+}
+
+/* 8) Intro (Parents/Bestmen) */
+#intro .leftcol,
+#intro .rightcol {
+  margin-bottom: 2rem;
+}
+#intro h5 {
+  font-family: var(--font-heading);
+  font-size: 1rem;
+  text-transform: uppercase;
+  color: var(--color-primary);
+  margin-bottom: .5rem;
+}
+
+/* 9) Events */
+.events .leftcol,
+.events .rightcol {
+  margin-bottom: 2rem;
+}
+.events p {
+  font-weight: 500;
+}
+.events h5 {
+  font-family: var(--font-heading);
+  font-size: 1rem;
+  margin: .5rem 0;
+}
+.time {
+  font-style: italic;
+  color: var(--color-muted);
+  font-size: .9rem;
+}
+
+/* 10) Dress Code Modal */
+.modal-body {
+  padding: 2rem;
+  text-align: center;
+}
+.modal-body h3,
+.modal-body h5 {
+  font-family: var(--font-heading);
+  color: var(--color-primary);
+}
+.modal-body p {
+  color: var(--color-secondary);
+  line-height: 1.6;
+}
+
+/* 11) Video Background */
+#video-bg {
+  position: relative;
+}
+#video-content {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.4);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+#video-content h5 {
+  color: var(--color-white);
+  font-size: 1.75rem;
+  margin-bottom: .5rem;
+}
+#video-content p {
+  color: var(--color-white);
+  font-size: 1rem;
+}
+
+#map {
+  background: var(--color-offwhite);
+}
+
+/* Responsive iframe wrapper */
+.map-iframe {
+  width: 100%;
+  max-width: 800px;
+  margin: 1.5rem auto;
+  position: relative;
+  aspect-ratio: 16/9;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+/* Make the entire iframe clickable */
+.map-iframe a {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* Remove default iframe border */
+.map-iframe iframe {
+  border: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* Toggle button */
+#btn-show-content {
+  margin-bottom: 1rem;
+}
+
+/* Hidden info panel */
+#map-content {
+  display: none;
+  max-width: 800px;
+  margin: 0 auto;
+  text-align: left;
+}
+
+/* Info panel columns */
+#map-content .row > div {
+  margin-bottom: 1rem;
+}
+
+/* Headings inside map-content */
+#map-content h5 {
+  font-family: var(--font-heading);
+  color: var(--color-primary);
+  margin-bottom: 0.5rem;
+}
+
+/* Paragraphs inside map-content */
+#map-content p {
+  color: var(--color-secondary);
+  line-height: 1.6;
+}
+/* 13) FAQ */
+.faq-list {
+  max-width: 800px;
+  margin: 0 auto;
+  display: grid;
+  gap: 1rem;
+}
+.faq-item {
+  border: 1px solid var(--color-offwhite);
+  border-radius: 6px;
+  overflow: hidden;
+  background: var(--color-white);
+  transition: box-shadow .3s;
+}
+.faq-item:hover {
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+.faq-item summary {
+  padding: 1rem;
+  font-family: var(--font-heading);
+  font-weight: 600;
+  cursor: pointer;
+  list-style: none;
+}
+.faq-item summary::-webkit-details-marker {
+  display: none;
+}
+.faq-item[open] summary {
+  background: var(--color-offwhite);
+}
+.faq-item p {
+  padding: 1rem;
+  color: var(--color-secondary);
+  line-height: 1.6;
+}
+
+/* RSVP Form */
+
+/* Make the outline‐primary button use your orange accent */
+.btn-outline-primary {
+  color: var(--color-accent) !important;
+  border-color: var(--color-accent) !important;
+}
+
+/* On hover/focus, fill it solid orange with white text */
+.btn-outline-primary:hover,
+.btn-outline-primary:focus {
+  background-color: var(--color-primary) !important;
+  border-color: var(--color-primary) !important;
+  color: #fff !important;
+}
+/* Submit button */
+/* 1) Modal header */
+
+#rsvp-modal .modal-header {
+  background-color: #ba5f1e !important;  /* your accent orange */
+  border-bottom: none;
+  justify-content: center;
+  padding: 1rem;
+}
+
+#rsvp-modal .modal-title {
+  color: #ffffff !important;
+  font-size: 1.25rem;
+  margin: 0;
+  width: 100%;
+  text-align: center;
+}
+
+/* make sure the close-X is visible */
+#rsvp-modal .btn-close {
+  filter: invert(100%);
+  opacity: 1;
+}
+
+/* 2) Modal body inputs */
+
+#rsvp-modal .modal-body {
+  padding: 1.5rem;
+}
+
+/* 3) Modal footer & submit button */
+
+#rsvp-modal .modal-footer {
+  border-top: none;
+  justify-content: center;
+  padding: 1rem;
+}
+
+#rsvp-modal .modal-footer button[type="submit"] {
+  background-color: #ba5f1e !important;
+  color: #ffffff !important;
+  width: 60%;
+  max-width: 280px;
+  border: none;
+  border-radius: 8px;
+  padding: .75rem;
+  text-transform: uppercase;
+  transition: background-color .3s;
+}
+
+#rsvp-modal .modal-footer button[type="submit"]:hover,
+#rsvp-modal .modal-footer button[type="submit"]:focus {
+  background-color: #9a4c1b !important;
+  color: #fff;
+}
+
+/* 5) Alert wrapper */
+#alert-wrapper {
+  margin-bottom: 1rem;
+}
+
+/* 6) Prevent modal closing unless explicitly dismissed */
+#rsvp-modal {
+  /* keep modal open when clicking outside or pressing ESC */
+  --bs-backdrop: static;
+  --bs-keyboard: false;
+}
+
+/* Responsive adjustments */
+@media (max-width: 576px) {
+  .form-row {
+    flex-direction: column;
+  }
+  .form-row .col-sm-6 {
+    flex-basis: 100%;
+  }
+}
+/* 15) Footer / To-top */
+footer .to-top-wrapper {
+  display: block;
+  margin: 2rem auto;
+  width: 50px; height: 50px;
+  border: 1px solid var(--color-offwhite);
+  border-radius: 50%;
+  background: var(--color-white);
+  cursor: pointer;
+  transition: transform .3s;
+}
+footer .to-top-wrapper:hover {
+  transform: translateY(-5px);
+}
+
+/* 16) Responsive */
+@media (max-width: 768px) {
+  .intro-text { padding: 3rem .5rem; }
+  .navigation { padding: .5rem 1rem; top: calc(3rem + 1rem); }
+  .header-nav { flex-direction: column; gap: .75rem; }
+  .faq-list { gap: .75rem; }
+  .rsvp-form { gap: .75rem; }
+}
+
+#add-to-cal a.btn {
+  margin: 0 .5rem;
+}
