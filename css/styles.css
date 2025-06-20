@@ -7,13 +7,13 @@
   --color-bg:       #fafafa;
   --color-offwhite: #f5f5f5;
   --color-white:    #ffffff;
-  --color-primary:  #ba5f1e;  /* warm accent */
+  --color-primary:  #00809D;  /* warm accent */
   --color-secondary:#4a4a4a;  /* dark text */
   --color-muted:    #7f8c8d;  /* grey */
   --color-link:     var(--color-primary);
-  --font-base:      "Playpen Sans", cursive;
-  --font-heading:   "Playpen Sans", cursive;
-  --font-script:    "Playpen Sans", cursive;
+  --font-base:      "Comfortaa", sans-serif;
+  --font-heading:   "Comfortaa", sans-serif;
+  --font-script:    "Comfortaa", sans-serif;
 }
 /* nav‐link underline for the active item */
 /* Reserve space for the underline */
@@ -43,7 +43,7 @@
   bottom: 0;
   width: 100%;
   height: 2px;
-  background-color: #ba5f1e;
+  background-color: #00809D;
   border-radius: 1px;
 }
 /* 2) Reset & Base */
@@ -364,7 +364,7 @@ h3.header {
 /* 1) Modal header */
 
 #rsvp-modal .modal-header {
-  background-color: #ba5f1e !important;  /* your accent orange */
+  background-color: #00809D !important;  /* your accent orange */
   border-bottom: none;
   justify-content: center;
   padding: 1rem;
@@ -399,7 +399,7 @@ h3.header {
 }
 
 #rsvp-modal .modal-footer button[type="submit"] {
-  background-color: #ba5f1e !important;
+  background-color: #00809D !important;
   color: #ffffff !important;
   width: 60%;
   max-width: 280px;
