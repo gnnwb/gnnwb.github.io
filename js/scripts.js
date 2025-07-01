@@ -8,7 +8,7 @@
 
         // show “saving” notice
         $('#alert-wrapper').html(
-          alert_markup('info','<strong>Μισό λεπτό!</strong> Γίνεται αποθήκευση...')
+          alert_markup('info','Γίνεται αποθήκευση...')
         );
 
         // invite-code check
@@ -47,7 +47,7 @@
               .html(alert_markup('success','Ευχαριστούμε! Σε περιμένουμε.'))
               .fadeIn();
         const title       = 'Giannis, Natalia, Nikos';
-        const description = 'Περιμένουμε να σε δούμε! Καλέστε στο +30 694222222';
+        const description = 'Περιμένουμε να σε δούμε! Για οποιαδήποτε πληροφορία, καλέστε στο +30 6945621165 ή +30 6973017807';
         const location    = 'Ktima Panagiotaki, Spilia 715 00, Greece';
 
         // 1) Build ICS content
