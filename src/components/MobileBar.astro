@@ -1,0 +1,75 @@
+---
+import Icon from './Icon.astro';
+import { t, type Locale } from '../i18n';
+import { site } from '../data/site';
+
+interface Props {
+  locale: Locale;
+  airbnbUrl?: string;
+}
+
+const { locale, airbnbUrl } = Astro.props;
+const s = t(locale);
+---
+
+<div class="mobile-bar" role="region" aria-label={s.nav.contact}>
+  <a class="icon-btn" href={site.phoneHref}>
+    <Icon name="phone" size={20} />
+    <span>{s.cta.call}</span>
+  </a>
+  <a class="icon-btn" href={`mailto:${site.email}`}>
+    <Icon name="mail" size={20} />
+    <span>{s.cta.email}</span>
+  </a>
+  {
+    airbnbUrl && (
+      <a class="btn btn--primary book" href={airbnbUrl} target="_blank" rel="noopener">
+        {s.cta.airbnb}
+      </a>
+    )
+  }
+</div>
+
+<style>
+  .mobile-bar {
+    display: none;
+  }
+
+  @media (max-width: 860px) {
+    .mobile-bar {
+      position: fixed;
+      left: 12px;
+      right: 12px;
+      bottom: max(12px, env(safe-area-inset-bottom));
+      z-index: 40;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px;
+      background: rgba(248, 242, 232, 0.96);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-radius: var(--r-pill);
+      box-shadow: 0 14px 34px -14px rgba(43, 36, 28, 0.45);
+    }
+  }
+
+  .icon-btn {
+    display: grid;
+    justify-items: center;
+    gap: 2px;
+    min-width: 58px;
+    padding: 6px 8px;
+    text-decoration: none;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--ink);
+  }
+
+  .book {
+    flex: 1;
+    min-height: 48px;
+    padding: 0 16px;
+    font-size: 0.92rem;
+  }
+</style>

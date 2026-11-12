@@ -1,0 +1,285 @@
+---
+import { Image, getImage } from 'astro:assets';
+import Icon from './Icon.astro';
+import { t, type Locale } from '../i18n';
+import type { Villa } from '../data/villas';
+
+interface Props {
+  villa: Villa;
+  locale: Locale;
+  /** Thumbnails visible before "View all photos". */
+  initial?: number;
+}
+
+const { villa, locale, initial = 11 } = Astro.props;
+const s = t(locale);
+const text = villa.text[locale];
+const total = villa.gallery.length;
+
+const items = await Promise.all(
+  villa.gallery.map(async (p, i) => {
+    const large = await getImage({ src: p.src, width: 1500, format: 'webp', quality: 82 });
+    return {
+      ...p,
+      i,
+      full: large.src,
+      alt: `${text.name} – ${text.photoCategories[p.category]}`,
+    };
+  }),
+);
+---
+
+<div class="gallery" data-gallery data-label={s.villa.photoOf}>
+  <ul class="grid">
+    {
+      items.map((p) => (
+        <li class:list={{ extra: p.i >= initial }} hidden={p.i >= initial}>
+          <button type="button" class="thumb" data-index={p.i} data-full={p.full} data-alt={p.alt}>
+            <Image src={p.src} alt={p.alt} widths={[400, 700]} sizes="(min-width: 960px) 30vw, 50vw" loading="lazy" />
+            <span class="cat">{text.photoCategories[p.category]}</span>
+          </button>
+        </li>
+      ))
+    }
+  </ul>
+
+  {
+    total > initial && (
+      <div class="more">
+        <button type="button" class="btn btn--ghost" data-show-all>
+          <Icon name="grid" size={18} />
+          {s.cta.allPhotos} ({total})
+        </button>
+      </div>
+    )
+  }
+
+  <dialog class="lightbox" data-lightbox aria-label={s.villa.gallery}>
+    <figure>
+      <img data-lb-img alt="" />
+      <figcaption data-lb-caption></figcaption>
+    </figure>
+    <button type="button" class="lb-btn lb-close" data-lb-close aria-label={s.nav.close}><Icon name="close" size={24} /></button>
+    <button type="button" class="lb-btn lb-prev" data-lb-prev aria-label={s.villa.previous}><Icon name="left" size={28} /></button>
+    <button type="button" class="lb-btn lb-next" data-lb-next aria-label={s.villa.next}><Icon name="right" size={28} /></button>
+  </dialog>
+</div>
+
+<style>
+  .grid {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-auto-flow: dense;
+    gap: 12px;
+  }
+
+  /* Rhythm: every seventh photo is shown large. */
+  .grid li:nth-child(7n + 1) {
+    grid-column: span 2;
+    grid-row: span 2;
+  }
+
+  .grid li[hidden] {
+    display: none;
+  }
+
+  .thumb {
+    position: relative;
+    display: block;
+    width: 100%;
+    height: 100%;
+    aspect-ratio: 3 / 2;
+    padding: 0;
+    border: 0;
+    border-radius: var(--r-md);
+    overflow: hidden;
+    cursor: zoom-in;
+    background: var(--stone);
+  }
+  .grid li:nth-child(7n + 1) .thumb {
+    aspect-ratio: auto;
+  }
+
+  .thumb :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.9s var(--ease);
+  }
+  .thumb:hover :global(img) {
+    transform: scale(1.05);
+  }
+
+  .cat {
+    position: absolute;
+    left: 12px;
+    bottom: 12px;
+    padding: 5px 12px;
+    border-radius: var(--r-pill);
+    background: rgba(248, 242, 232, 0.92);
+    color: var(--ink);
+    font-size: 0.78rem;
+    font-weight: 600;
+    opacity: 0;
+    transform: translateY(6px);
+    transition:
+      opacity 0.3s var(--ease),
+      transform 0.3s var(--ease);
+  }
+  .thumb:hover .cat,
+  .thumb:focus-visible .cat {
+    opacity: 1;
+    transform: none;
+  }
+
+  .more {
+    display: flex;
+    justify-content: center;
+    margin-top: 32px;
+  }
+
+  .lightbox {
+    width: 100vw;
+    height: 100vh;
+    max-width: none;
+    max-height: none;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: rgba(28, 23, 18, 0.96);
+    color: var(--on-dark);
+  }
+  .lightbox::backdrop {
+    background: rgba(28, 23, 18, 0.96);
+  }
+  .lightbox[open] {
+    display: grid;
+    place-items: center;
+  }
+
+  figure {
+    margin: 0;
+    display: grid;
+    gap: 14px;
+    justify-items: center;
+    padding: 64px 72px;
+  }
+  figure img {
+    max-width: min(1500px, 100%);
+    max-height: calc(100vh - 150px);
+    width: auto;
+    height: auto;
+    border-radius: var(--r-sm);
+  }
+  figcaption {
+    font-size: 0.9rem;
+    color: var(--on-dark-soft);
+  }
+
+  .lb-btn {
+    position: absolute;
+    display: grid;
+    place-items: center;
+    width: 52px;
+    height: 52px;
+    border: 0;
+    border-radius: 50%;
+    background: rgba(243, 235, 221, 0.1);
+    color: var(--on-dark);
+    cursor: pointer;
+    transition: background-color 0.2s var(--ease);
+  }
+  .lb-btn:hover {
+    background: rgba(243, 235, 221, 0.22);
+  }
+  .lb-close {
+    top: 16px;
+    right: 16px;
+  }
+  .lb-prev {
+    left: 16px;
+    top: 50%;
+    translate: 0 -50%;
+  }
+  .lb-next {
+    right: 16px;
+    top: 50%;
+    translate: 0 -50%;
+  }
+
+  @media (max-width: 720px) {
+    .grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+    }
+    figure {
+      padding: 64px 0;
+    }
+    .lb-prev,
+    .lb-next {
+      top: auto;
+      bottom: 20px;
+      translate: none;
+    }
+    .lb-prev {
+      left: calc(50% - 64px);
+    }
+    .lb-next {
+      right: calc(50% - 64px);
+    }
+  }
+</style>
+
+<script>
+  for (const root of document.querySelectorAll<HTMLElement>('[data-gallery]')) {
+    const thumbs = [...root.querySelectorAll<HTMLButtonElement>('.thumb')];
+    const dialog = root.querySelector<HTMLDialogElement>('[data-lightbox]')!;
+    const img = root.querySelector<HTMLImageElement>('[data-lb-img]')!;
+    const caption = root.querySelector<HTMLElement>('[data-lb-caption]')!;
+    const label = root.dataset.label ?? '{n} / {total}';
+    let current = 0;
+
+    const show = (i: number) => {
+      current = (i + thumbs.length) % thumbs.length;
+      const t = thumbs[current];
+      img.src = t.dataset.full!;
+      img.alt = t.dataset.alt!;
+      caption.textContent = `${t.dataset.alt} · ${label.replace('{n}', String(current + 1)).replace('{total}', String(thumbs.length))}`;
+      // Warm the cache for the next photo.
+      const next = thumbs[(current + 1) % thumbs.length];
+      new Image().src = next.dataset.full!;
+    };
+
+    thumbs.forEach((t, i) =>
+      t.addEventListener('click', () => {
+        show(i);
+        dialog.showModal();
+      }),
+    );
+    root.querySelector('[data-lb-prev]')!.addEventListener('click', () => show(current - 1));
+    root.querySelector('[data-lb-next]')!.addEventListener('click', () => show(current + 1));
+    root.querySelector('[data-lb-close]')!.addEventListener('click', () => dialog.close());
+    dialog.addEventListener('click', (e) => {
+      if (e.target === dialog) dialog.close();
+    });
+    dialog.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowLeft') show(current - 1);
+      if (e.key === 'ArrowRight') show(current + 1);
+    });
+
+    let startX = 0;
+    dialog.addEventListener('touchstart', (e) => (startX = e.touches[0].clientX), { passive: true });
+    dialog.addEventListener('touchend', (e) => {
+      const dx = e.changedTouches[0].clientX - startX;
+      if (Math.abs(dx) > 50) show(current + (dx < 0 ? 1 : -1));
+    });
+
+    root.querySelector<HTMLButtonElement>('[data-show-all]')?.addEventListener('click', (e) => {
+      root.querySelectorAll<HTMLElement>('.extra').forEach((li) => (li.hidden = false));
+      (e.currentTarget as HTMLElement).parentElement?.remove();
+    });
+  }
+</script>

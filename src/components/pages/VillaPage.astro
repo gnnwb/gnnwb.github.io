@@ -1,0 +1,681 @@
+---
+import { Picture } from 'astro:assets';
+import Base from '../../layouts/Base.astro';
+import Icon from '../Icon.astro';
+import Gallery from '../Gallery.astro';
+import LocationExplorer from '../LocationExplorer.astro';
+import { t, type Locale } from '../../i18n';
+import { villaPath, type Villa } from '../../data/villas';
+import { site } from '../../data/site';
+
+interface Props {
+  locale: Locale;
+  villa: Villa;
+}
+
+const { locale, villa } = Astro.props;
+const s = t(locale);
+const v = s.villa;
+const text = villa.text[locale];
+const outdoorImgs = villa.gallery.filter((p) => ['garden', 'terrace'].includes(p.category)).slice(0, 2);
+
+const stats = [
+  { icon: 'bed', value: villa.stats.bedrooms, label: v.bedrooms },
+  { icon: 'users', value: villa.stats.guests, label: v.guests },
+  { icon: 'bath', value: villa.stats.bathrooms, label: v.bathrooms },
+  { icon: 'home', value: `${villa.stats.interiorM2} m²`, label: v.interior },
+  { icon: 'leaf', value: `${villa.stats.plotM2.toLocaleString(locale)} m²`, label: v.plot },
+] as const;
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'VacationRental',
+  name: text.name,
+  description: text.summary,
+  url: new URL(villaPath(villa.slug), Astro.site).href,
+  telephone: site.phone,
+  email: site.email,
+  address: {
+    '@type': 'PostalAddress',
+    addressLocality: 'Old Hersonissos',
+    postalCode: '70014',
+    addressRegion: 'Crete',
+    addressCountry: 'GR',
+  },
+  geo: { '@type': 'GeoCoordinates', latitude: villa.coords.lat, longitude: villa.coords.lng },
+  containsPlace: {
+    '@type': 'Accommodation',
+    numberOfBedrooms: villa.stats.bedrooms,
+    numberOfBathroomsTotal: villa.stats.bathrooms,
+    occupancy: { '@type': 'QuantitativeValue', value: villa.stats.guests },
+    floorSize: { '@type': 'QuantitativeValue', value: villa.stats.interiorM2, unitCode: 'MTK' },
+  },
+  checkinTime: villa.checkIn,
+  checkoutTime: villa.checkOut,
+};
+---
+
+<Base
+  locale={locale}
+  path={villaPath(villa.slug)}
+  title={`${text.name} · ${text.tagline}`}
+  description={text.summary}
+  image={villa.hero}
+  overlayHeader
+  airbnbUrl={villa.airbnbUrl}
+>
+  <script type="application/ld+json" slot="head" set:html={JSON.stringify(jsonLd)} />
+
+  <section class="hero">
+    <Picture
+      src={villa.hero}
+      alt={text.name}
+      widths={[640, 1024, 1500]}
+      sizes="100vw"
+      formats={['avif', 'webp']}
+      loading="eager"
+      fetchpriority="high"
+      class="hero-img"
+    />
+    <div class="wrap hero-content">
+      <span class="eyebrow">{s.home.eyebrow}</span>
+      <h1>{text.name}</h1>
+      <p class="hero-lead">{text.tagline}</p>
+    </div>
+  </section>
+
+  <div class="wrap">
+    <ul class="stats" aria-label={v.overview}>
+      {
+        stats.map((st) => (
+          <li>
+            <Icon name={st.icon} size={22} />
+            <strong>{st.value}</strong>
+            <span>{st.label}</span>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+
+  <section class="section overview">
+    <div class="wrap overview-grid">
+      <div class="overview-text" data-reveal>
+        <span class="eyebrow">{v.overview}</span>
+        <div class="prose lead">
+          {text.intro.map((p) => <p>{p}</p>)}
+        </div>
+        <ul class="check-list highlights">
+          {text.highlights.map((h) => <li>{h}</li>)}
+        </ul>
+      </div>
+
+      <aside class="book" data-reveal style="--delay: 0.1s">
+        <h2>{v.bookTitle}</h2>
+        <p>{v.bookText}</p>
+        <dl class="times">
+          <div><dt><Icon name="clock" size={16} />{v.checkIn}</dt><dd>{villa.checkIn}</dd></div>
+          <div><dt><Icon name="clock" size={16} />{v.checkOut}</dt><dd>{villa.checkOut}</dd></div>
+        </dl>
+        <small>{v.checkTimesNote}</small>
+        <a class="btn btn--primary" href={villa.airbnbUrl} target="_blank" rel="noopener">
+          {s.cta.airbnb}
+          <Icon name="external" size={16} />
+        </a>
+        <div class="book-direct">
+          <a href={site.phoneHref}><Icon name="phone" size={18} />{site.phone}</a>
+          <a href={`mailto:${site.email}`}><Icon name="mail" size={18} />{site.email}</a>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <section class="mosaic wrap" aria-hidden="true">
+    {
+      villa.featured.map((img, i) => (
+        <div class:list={['media', `m${i}`, i % 2 ? 'shape-b' : 'shape-a']} data-reveal style={`--delay: ${i * 0.08}s`}>
+          <Picture src={img} alt="" widths={[400, 700, 1000]} sizes="(min-width: 960px) 33vw, 50vw" formats={['avif', 'webp']} />
+        </div>
+      ))
+    }
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <div class="section-head" data-reveal>
+        <span class="eyebrow">{text.name}</span>
+        <h2>{v.spaces}</h2>
+      </div>
+      <ul class="rooms">
+        {
+          text.rooms.map((r, i) => (
+            <li data-reveal style={`--delay: ${(i % 3) * 0.08}s`}>
+              <h3>{r.title}</h3>
+              <p>{r.text}</p>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <section class="section section--dark">
+    <div class="wrap outdoors-grid">
+      <div class="outdoors-text" data-reveal>
+        <span class="eyebrow">{villa.stats.plotM2.toLocaleString(locale)} m²</span>
+        <h2>{v.outdoors}</h2>
+        <div class="prose lead">
+          {text.outdoors.map((p) => <p>{p}</p>)}
+        </div>
+      </div>
+      <div class="outdoors-media">
+        {
+          outdoorImgs.map((p, i) => (
+            <div class:list={['media', i ? 'shape-b small' : 'shape-c big']} data-reveal style={`--delay: ${0.1 + i * 0.1}s`}>
+              <Picture src={p.src} alt="" widths={[480, 800]} sizes="(min-width: 960px) 25vw, 50vw" formats={['avif', 'webp']} />
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="gallery">
+    <div class="wrap">
+      <div class="section-head" data-reveal>
+        <span class="eyebrow">{villa.gallery.length}</span>
+        <h2>{v.gallery}</h2>
+      </div>
+      <Gallery villa={villa} locale={locale} />
+    </div>
+  </section>
+
+  <section class="section section--light">
+    <div class="wrap">
+      <div class="section-head" data-reveal>
+        <h2>{v.amenities}</h2>
+      </div>
+      <div class="amenities">
+        <div data-reveal>
+          <h3>{v.inside}</h3>
+          <ul class="check-list">{text.amenitiesInside.map((a) => <li>{a}</li>)}</ul>
+        </div>
+        <div data-reveal style="--delay: 0.08s">
+          <h3>{v.outside}</h3>
+          <ul class="check-list">{text.amenitiesOutside.map((a) => <li>{a}</li>)}</ul>
+          <h3 class="spaced">{v.included}</h3>
+          <ul class="check-list">{text.included.map((a) => <li>{a}</li>)}</ul>
+        </div>
+        <div class="on-request" data-reveal style="--delay: 0.16s">
+          <h3>{v.onRequest}</h3>
+          <p class="note">{v.onRequestNote}</p>
+          <ul class="dash-list">{text.onRequest.map((a) => <li>{a}</li>)}</ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <LocationExplorer
+    locale={locale}
+    villa={villa}
+    eyebrow={v.location}
+    title={s.location.title}
+    lead={s.location.lead}
+    initialSection="nearby"
+  >
+    <div class="quick" data-reveal>
+      <h3>{v.distances}</h3>
+      <dl class="distances">
+        {
+          text.distances.map((d) => (
+            <div>
+              <dt>{d.place}</dt>
+              <dd>{d.distance}</dd>
+            </div>
+          ))
+        }
+      </dl>
+    </div>
+  </LocationExplorer>
+
+  <section class="section section--light faq">
+    <div class="wrap faq-grid">
+      <div class="faq-head" data-reveal>
+        <span class="eyebrow">{v.faqEyebrow}</span>
+        <h2>{v.faqTitle}</h2>
+        <p class="lead">{v.bookText}</p>
+        <a class="link-arrow" href={`mailto:${site.email}`}>
+          {site.email}
+          <Icon name="arrow" size={18} />
+        </a>
+      </div>
+      <div class="faq-list" data-reveal style="--delay: 0.1s">
+        {
+          text.faq.map((f, i) => (
+            <details open={i === 0}>
+              <summary>
+                {f.q}
+                <Icon name="plus" size={20} />
+              </summary>
+              <p>{f.a}</p>
+            </details>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="final">
+    <div class="wrap final-inner" data-reveal>
+      <h2>{v.bookTitle}</h2>
+      <p>{v.bookText}</p>
+      <div class="final-actions">
+        <a class="btn btn--light" href={villa.airbnbUrl} target="_blank" rel="noopener">
+          {s.cta.airbnb}
+          <Icon name="external" size={16} />
+        </a>
+        <a class="btn btn--on-dark" href={site.phoneHref}><Icon name="phone" size={18} />{site.phone}</a>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .hero {
+    position: relative;
+    min-height: 88svh;
+    display: flex;
+    align-items: flex-end;
+    color: #fff;
+    overflow: hidden;
+  }
+  .hero :global(.hero-img) {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .hero::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(30, 22, 14, 0.4) 0%, rgba(30, 22, 14, 0) 30%, rgba(30, 22, 14, 0.55) 62%, rgba(30, 22, 14, 0.82) 100%);
+  }
+  .hero h1,
+  .hero-lead {
+    text-shadow: 0 2px 24px rgba(20, 14, 8, 0.35);
+  }
+  .hero-content {
+    position: relative;
+    z-index: 1;
+    padding-bottom: clamp(96px, 14vh, 150px);
+    display: grid;
+    gap: 18px;
+  }
+  .hero .eyebrow {
+    color: #fff;
+  }
+  .hero-lead {
+    max-width: 48ch;
+    font-size: clamp(1.05rem, 1.6vw, 1.3rem);
+    color: rgba(255, 255, 255, 0.9);
+  }
+
+  .stats {
+    position: relative;
+    z-index: 2;
+    margin: -56px 0 0;
+    padding: 22px clamp(20px, 3vw, 40px);
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 16px;
+    background: var(--sand-light);
+    border-radius: var(--r-md);
+    box-shadow: 0 24px 50px -30px rgba(43, 36, 28, 0.45);
+  }
+  .stats li {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    column-gap: 12px;
+    align-items: center;
+  }
+  .stats :global(svg) {
+    grid-row: span 2;
+    color: var(--olive);
+  }
+  .stats strong {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: 1.5rem;
+    line-height: 1.1;
+  }
+  .stats span {
+    font-size: 0.82rem;
+    color: var(--ink-soft);
+  }
+
+  .overview-grid {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr;
+    gap: clamp(40px, 6vw, 96px);
+    align-items: start;
+  }
+  .overview-text {
+    display: grid;
+    gap: 28px;
+  }
+  .overview-text .lead {
+    color: var(--ink);
+    max-width: 64ch;
+  }
+  .highlights {
+    grid-template-columns: 1fr 1fr;
+    font-weight: 500;
+  }
+
+  .book {
+    position: sticky;
+    top: calc(var(--header-h) + 24px);
+    display: grid;
+    gap: 16px;
+    padding: clamp(28px, 3vw, 40px);
+    background: var(--sand-light);
+    border-radius: var(--r-md);
+  }
+  .book h2 {
+    font-size: clamp(1.7rem, 2.5vw, 2.2rem);
+  }
+  .book p,
+  .book small {
+    color: var(--ink-soft);
+  }
+  .times {
+    margin: 4px 0 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  .times div {
+    padding: 14px 16px;
+    border-radius: var(--r-sm);
+    background: var(--sand);
+  }
+  .times dt {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.8rem;
+    color: var(--ink-soft);
+  }
+  .times dd {
+    margin: 4px 0 0;
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+  }
+  .book-direct {
+    display: grid;
+    gap: 8px;
+    padding-top: 12px;
+    border-top: 1px solid var(--stone);
+    font-size: 0.95rem;
+  }
+  .book-direct a {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+  }
+  .book-direct a:hover {
+    color: var(--clay);
+  }
+
+  .mosaic {
+    display: grid;
+    grid-template-columns: 1.3fr 1fr 1fr;
+    grid-template-rows: 260px 260px;
+    gap: 14px;
+  }
+  .mosaic .m0 {
+    grid-row: span 2;
+  }
+  .mosaic .m3 {
+    grid-column: span 2;
+  }
+
+  .rooms {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
+    gap: 16px;
+  }
+  .rooms li {
+    display: grid;
+    gap: 10px;
+    align-content: start;
+    padding: 28px;
+    background: var(--sand-light);
+    border-radius: var(--r-md);
+  }
+  .rooms p {
+    color: var(--ink-soft);
+  }
+
+  .outdoors-grid {
+    display: grid;
+    grid-template-columns: 1.1fr 1fr;
+    gap: clamp(40px, 6vw, 96px);
+    align-items: center;
+  }
+  .outdoors-text {
+    display: grid;
+    gap: 24px;
+  }
+  .outdoors-media {
+    position: relative;
+    padding-bottom: 22%;
+  }
+  .outdoors-media .big {
+    width: 80%;
+    aspect-ratio: 4 / 5;
+    margin-left: auto;
+  }
+  .outdoors-media .small {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 48%;
+    aspect-ratio: 4 / 3;
+    border: 8px solid var(--night);
+  }
+
+  .amenities {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: clamp(32px, 4vw, 56px);
+  }
+  .amenities h3 {
+    margin-bottom: 20px;
+  }
+  .amenities .spaced {
+    margin-top: 40px;
+  }
+  .on-request {
+    padding: 32px;
+    background: var(--sand);
+    border-radius: var(--r-md);
+    align-self: start;
+  }
+  .note {
+    margin: -12px 0 18px;
+    font-size: 0.9rem;
+    color: var(--ink-soft);
+  }
+  .dash-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 10px;
+  }
+  .dash-list li {
+    padding-left: 22px;
+    position: relative;
+  }
+  .dash-list li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.8em;
+    width: 10px;
+    height: 1.5px;
+    background: var(--clay);
+  }
+
+  .quick {
+    margin-top: 40px;
+  }
+  .quick h3 {
+    margin-bottom: 18px;
+  }
+  .distances {
+    margin: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 10px;
+  }
+  .distances div {
+    display: grid;
+    gap: 4px;
+    padding: 16px 18px;
+    border-radius: var(--r-sm);
+    background: var(--sand-light);
+  }
+  .distances dt {
+    font-size: 0.86rem;
+    color: var(--ink-soft);
+  }
+  .distances dd {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: 1.35rem;
+  }
+
+  .faq-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.4fr;
+    gap: clamp(40px, 6vw, 96px);
+    align-items: start;
+  }
+  .faq-head {
+    display: grid;
+    gap: 20px;
+    justify-items: start;
+  }
+  .faq-list details {
+    border-bottom: 1px solid rgba(59, 47, 34, 0.14);
+  }
+  .faq-list summary {
+    list-style: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    padding: 22px 0;
+    font-family: var(--font-display);
+    font-size: clamp(1.15rem, 1.6vw, 1.35rem);
+    cursor: pointer;
+  }
+  .faq-list summary::-webkit-details-marker {
+    display: none;
+  }
+  .faq-list summary :global(svg) {
+    flex: none;
+    color: var(--clay);
+    transition: rotate 0.3s var(--ease);
+  }
+  .faq-list details[open] summary :global(svg) {
+    rotate: 45deg;
+  }
+  .faq-list p {
+    padding: 0 40px 24px 0;
+    color: var(--ink-soft);
+  }
+
+  .final {
+    background: var(--olive-deep);
+    color: #fff;
+    padding-block: clamp(64px, 9vw, 112px);
+    text-align: center;
+  }
+  .final-inner {
+    display: grid;
+    gap: 18px;
+    justify-items: center;
+  }
+  .final p {
+    max-width: 52ch;
+    color: rgba(255, 255, 255, 0.85);
+  }
+  .final-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 10px;
+  }
+  .final .btn--on-dark {
+    border-color: rgba(255, 255, 255, 0.6);
+    color: #fff;
+  }
+  .final .btn--on-dark:hover {
+    background: #fff;
+    color: var(--olive-deep);
+  }
+
+  @media (max-width: 1080px) {
+    .stats {
+      grid-template-columns: repeat(3, 1fr);
+    }
+    .amenities {
+      grid-template-columns: 1fr 1fr;
+    }
+    .on-request {
+      grid-column: 1 / -1;
+    }
+  }
+  @media (max-width: 960px) {
+    .overview-grid,
+    .outdoors-grid,
+    .faq-grid {
+      grid-template-columns: 1fr;
+    }
+    .book {
+      position: static;
+    }
+    .mosaic {
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: 220px 160px 160px;
+    }
+    .mosaic .m0 {
+      grid-column: span 2;
+      grid-row: auto;
+    }
+    .mosaic .m3 {
+      grid-column: span 2;
+    }
+  }
+  @media (max-width: 640px) {
+    .stats {
+      grid-template-columns: repeat(2, 1fr);
+      margin-top: -40px;
+    }
+    .highlights,
+    .amenities {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

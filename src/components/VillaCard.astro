@@ -1,0 +1,136 @@
+---
+import { Picture } from 'astro:assets';
+import Icon from './Icon.astro';
+import { localizePath, t, type Locale } from '../i18n';
+import { villaPath, type Villa } from '../data/villas';
+
+interface Props {
+  villa: Villa;
+  locale: Locale;
+  /** Large horizontal layout, used when it is the only villa. */
+  featured?: boolean;
+}
+
+const { villa, locale, featured = false } = Astro.props;
+const s = t(locale);
+const text = villa.text[locale];
+const href = localizePath(locale, villaPath(villa.slug));
+---
+
+<article class:list={['card', { 'card--featured': featured }]} data-reveal>
+  <a href={href} class="media shape-a image" tabindex="-1" aria-hidden="true">
+    <Picture
+      src={villa.card}
+      alt=""
+      widths={[480, 800, 1200]}
+      sizes={featured ? '(min-width: 960px) 58vw, 100vw' : '(min-width: 960px) 40vw, 100vw'}
+      formats={['avif', 'webp']}
+    />
+  </a>
+  <div class="body">
+    <h3><a href={href}>{text.name}</a></h3>
+    <p class="tagline">{text.tagline}</p>
+    <ul class="stats">
+      <li><Icon name="bed" size={18} />{villa.stats.bedrooms} {s.villa.bedrooms}</li>
+      <li><Icon name="users" size={18} />{s.villa.upTo} {villa.stats.guests} {s.villa.guests}</li>
+      <li><Icon name="home" size={18} />{villa.stats.interiorM2} m²</li>
+    </ul>
+    {
+      featured && (
+        <ul class="tags">
+          {text.highlights.map((h) => (
+            <li>{h}</li>
+          ))}
+        </ul>
+      )
+    }
+    <a href={href} class="link-arrow">
+      {s.cta.discover}
+      <Icon name="arrow" size={18} />
+    </a>
+  </div>
+</article>
+
+<style>
+  .card {
+    display: grid;
+    gap: 24px;
+  }
+
+  .image {
+    display: block;
+    aspect-ratio: 4 / 3;
+  }
+  .image :global(img) {
+    transition: transform 1.2s var(--ease);
+  }
+  .card:hover .image :global(img) {
+    transform: scale(1.04);
+  }
+
+  .body {
+    display: grid;
+    gap: 14px;
+    align-content: start;
+    justify-items: start;
+  }
+
+  h3 {
+    font-size: clamp(1.8rem, 3vw, 2.6rem);
+  }
+  h3 a {
+    text-decoration: none;
+  }
+
+  .tagline {
+    color: var(--ink-soft);
+    max-width: 46ch;
+  }
+
+  .stats {
+    list-style: none;
+    padding: 0;
+    margin: 4px 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 22px;
+    font-size: 0.93rem;
+    font-weight: 500;
+  }
+  .stats li {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .stats :global(svg) {
+    color: var(--olive);
+  }
+
+  .tags {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 8px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .tags li {
+    padding: 7px 14px;
+    border-radius: var(--r-pill);
+    background: var(--olive-tint);
+    color: var(--olive-deep);
+    font-size: 0.86rem;
+    font-weight: 500;
+  }
+
+  @media (min-width: 960px) {
+    .card--featured {
+      grid-template-columns: 1.35fr 1fr;
+      align-items: center;
+      gap: clamp(40px, 6vw, 88px);
+    }
+    .card--featured .image {
+      aspect-ratio: 5 / 4;
+    }
+  }
+</style>

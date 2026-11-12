@@ -1,0 +1,11 @@
+---
+import VillaPage from '../../components/pages/VillaPage.astro';
+import { villas, type Villa } from '../../data/villas';
+
+export function getStaticPaths() {
+  return villas.map((villa) => ({ params: { slug: villa.slug }, props: { villa } }));
+}
+const { villa } = Astro.props as { villa: Villa };
+---
+
+<VillaPage locale="en" villa={villa} />

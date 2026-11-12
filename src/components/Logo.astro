@@ -1,0 +1,48 @@
+---
+// Wordmark: a small arched "window" mark plus the name, in the display serif.
+---
+
+<span class="logo">
+  <svg class="mark" viewBox="0 0 32 40" aria-hidden="true">
+    <path d="M4 38V18C4 10 9.4 4 16 4s12 6 12 14v20" fill="none" stroke="currentColor" stroke-width="2.2" />
+    <path d="M10 38V22c0-4 2.7-7 6-7s6 3 6 7v16" fill="currentColor" opacity="0.9" />
+  </svg>
+  <span class="text">
+    <span class="name">Belle Helene</span>
+    <span class="sub">Villas · Crete</span>
+  </span>
+</span>
+
+<style>
+  .logo {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .mark {
+    width: 24px;
+    height: 30px;
+    color: var(--clay-soft);
+  }
+  :global(.site-header--overlay:not(.is-scrolled)) .mark,
+  :global(.site-footer) .mark {
+    color: currentColor;
+  }
+  .text {
+    display: grid;
+    line-height: 1;
+  }
+  .name {
+    font-family: var(--font-display);
+    font-size: 1.45rem;
+    letter-spacing: -0.01em;
+  }
+  .sub {
+    margin-top: 5px;
+    font-size: 0.66rem;
+    font-weight: 600;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    opacity: 0.75;
+  }
+</style>

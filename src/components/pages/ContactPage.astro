@@ -1,0 +1,273 @@
+---
+import { Picture } from 'astro:assets';
+import Base from '../../layouts/Base.astro';
+import Icon from '../Icon.astro';
+import ContactForm from '../ContactForm.astro';
+import LocationExplorer from '../LocationExplorer.astro';
+import { t, type Locale } from '../../i18n';
+import { site } from '../../data/site';
+import { villas } from '../../data/villas';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const s = t(locale);
+const c = s.contact;
+const main = villas[0];
+const heroImg = main.gallery.find((p) => p.category === 'terrace')?.src ?? main.hero;
+const directions = `https://www.google.com/maps/dir/?api=1&destination=${main.coords.lat},${main.coords.lng}`;
+
+const tiles = [
+  { icon: 'phone', label: c.phoneLabel, value: site.phone, href: site.phoneHref, action: c.callAction, external: false },
+  { icon: 'mail', label: c.emailLabel, value: site.email, href: `mailto:${site.email}`, action: c.emailAction, external: false },
+  { icon: 'pin', label: c.addressLabel, value: c.address, href: directions, action: s.location.directions, external: true },
+] as const;
+---
+
+<Base
+  locale={locale}
+  path="/contact/"
+  title={`${c.title} · Belle Helene Villas`}
+  description={c.lead}
+  image={heroImg}
+  overlayHeader
+>
+  <section class="hero">
+    <Picture src={heroImg} alt="" widths={[640, 1024, 1500]} sizes="100vw" formats={['avif', 'webp']} loading="eager" fetchpriority="high" class="hero-img" />
+    <div class="wrap hero-content">
+      <span class="eyebrow">{s.home.eyebrow}</span>
+      <h1>{c.title}</h1>
+      <p class="hero-lead">{c.lead}</p>
+    </div>
+  </section>
+
+  <div class="wrap">
+    <ul class="tiles">
+      {
+        tiles.map((tile) => (
+          <li>
+            <a href={tile.href} class="tile" {...(tile.external ? { target: '_blank', rel: 'noopener' } : {})}>
+              <span class="tile-icon">
+                <Icon name={tile.icon} size={22} />
+              </span>
+              <span class="tile-label">{tile.label}</span>
+              <span class="tile-value">{tile.value}</span>
+              <span class="tile-action">
+                {tile.action}
+                <Icon name={tile.external ? 'external' : 'arrow'} size={16} />
+              </span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+
+  <section class="section">
+    <div class="wrap form-grid">
+      <div class="form-intro" data-reveal>
+        <span class="eyebrow">{c.title}</span>
+        <h2>{c.formTitle}</h2>
+        <p class="lead">{c.formLead}</p>
+        <p class="note">
+          <Icon name="clock" size={18} />
+          {c.replyNote}
+        </p>
+        <div class="airbnb">
+          <p>{c.bookDirect}</p>
+          <a class="link-arrow" href={main.airbnbUrl} target="_blank" rel="noopener">
+            {s.cta.airbnb}
+            <Icon name="arrow" size={18} />
+          </a>
+        </div>
+      </div>
+
+      <div class="form-card" data-reveal style="--delay: 0.1s">
+        <ContactForm locale={locale} maxGuests={main.stats.guests} />
+      </div>
+    </div>
+  </section>
+
+  <LocationExplorer locale={locale} villa={main} eyebrow={c.findUs} title={s.explore.travel} initialSection="travel" light />
+</Base>
+
+<style>
+  .hero {
+    position: relative;
+    min-height: 62svh;
+    display: flex;
+    align-items: flex-end;
+    color: #fff;
+    overflow: hidden;
+  }
+  .hero :global(.hero-img) {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .hero::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(30, 22, 14, 0.45) 0%, rgba(30, 22, 14, 0.15) 35%, rgba(30, 22, 14, 0.75) 100%);
+  }
+  .hero-content {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    gap: 16px;
+    padding-top: 140px;
+    padding-bottom: 120px;
+  }
+  .hero .eyebrow {
+    color: #fff;
+  }
+  .hero-lead {
+    max-width: 52ch;
+    font-size: clamp(1.05rem, 1.6vw, 1.25rem);
+    color: rgba(255, 255, 255, 0.9);
+    text-shadow: 0 2px 20px rgba(20, 14, 8, 0.35);
+  }
+
+  .tiles {
+    position: relative;
+    z-index: 2;
+    list-style: none;
+    margin: -64px 0 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+  .tile {
+    height: 100%;
+    display: grid;
+    gap: 6px;
+    align-content: start;
+    padding: 28px;
+    background: var(--sand-light);
+    border-radius: var(--r-md);
+    box-shadow: 0 24px 50px -30px rgba(43, 36, 28, 0.45);
+    transition:
+      transform 0.35s var(--ease),
+      box-shadow 0.35s var(--ease);
+  }
+  .tile:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 30px 60px -30px rgba(43, 36, 28, 0.55);
+  }
+  .tile-icon {
+    display: grid;
+    place-items: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: var(--olive-tint);
+    color: var(--olive-deep);
+    margin-bottom: 12px;
+  }
+  .tile-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+  .tile-value {
+    font-family: var(--font-display);
+    font-size: clamp(1.2rem, 1.8vw, 1.45rem);
+    line-height: 1.3;
+    overflow-wrap: anywhere;
+  }
+  .tile-action {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 12px;
+    font-weight: 600;
+    font-size: 0.92rem;
+    color: var(--clay);
+  }
+  .tile-action :global(svg) {
+    transition: transform 0.3s var(--ease);
+  }
+  .tile:hover .tile-action :global(svg) {
+    transform: translateX(4px);
+  }
+
+  .form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.35fr;
+    gap: clamp(40px, 6vw, 96px);
+    align-items: start;
+  }
+  .form-intro {
+    display: grid;
+    gap: 22px;
+    justify-items: start;
+    position: sticky;
+    top: calc(var(--header-h) + 32px);
+  }
+  .note {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 16px;
+    border-radius: var(--r-pill);
+    background: var(--olive-tint);
+    color: var(--olive-deep);
+    font-size: 0.9rem;
+    font-weight: 600;
+  }
+  .airbnb {
+    display: grid;
+    gap: 12px;
+    justify-items: start;
+    width: 100%;
+    margin-top: 12px;
+    padding-top: 24px;
+    border-top: 1px solid rgba(59, 47, 34, 0.14);
+    color: var(--ink-soft);
+  }
+  .airbnb .link-arrow {
+    color: var(--ink);
+  }
+  .form-card {
+    padding: clamp(24px, 4vw, 48px);
+    background: var(--sand-light);
+    border-radius: var(--r-md);
+  }
+
+  .form-grid > * {
+    min-width: 0;
+  }
+
+  @media (max-width: 960px) {
+    .tiles {
+      grid-template-columns: 1fr;
+      margin-top: -48px;
+    }
+    .tile {
+      grid-template-columns: auto 1fr;
+      column-gap: 16px;
+      padding: 20px;
+    }
+    .tile-icon {
+      grid-row: span 3;
+      margin: 0;
+    }
+    .tile-action {
+      margin-top: 4px;
+    }
+    .form-grid {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .form-intro {
+      position: static;
+    }
+  }
+</style>

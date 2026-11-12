@@ -1,0 +1,181 @@
+---
+import Base from '../../layouts/Base.astro';
+import Icon from '../Icon.astro';
+import LocationExplorer from '../LocationExplorer.astro';
+import { localizePath, t, type Locale } from '../../i18n';
+import { exploreSections, placesFor, sectionColors } from '../../data/explore';
+import { villas, villaPath } from '../../data/villas';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const s = t(locale);
+const all = placesFor(locale);
+const main = villas[0];
+---
+
+<Base locale={locale} path="/explore/" title={`${s.explore.title} · Belle Helene Villas`} description={s.explore.lead}>
+  <section class="intro">
+    <div class="wrap intro-text" data-reveal>
+      <span class="eyebrow">{s.home.eyebrow}</span>
+      <h1>{s.explore.title}</h1>
+      <p class="lead">{s.explore.lead}</p>
+    </div>
+  </section>
+
+  <LocationExplorer locale={locale} villa={main} id="map" />
+
+  {
+    exploreSections.map((key, si) => (
+      <section class:list={['section', 'guide', { 'section--light': si % 2 === 0 }]} id={key}>
+        <div class="wrap">
+          <div class="guide-head" data-reveal>
+            <span class="index" style={`--c:${sectionColors[key]}`}>0{si + 1}</span>
+            <h2>{s.explore[key]}</h2>
+          </div>
+          <ul class="places">
+            {all
+              .filter((p) => p.section === key)
+              .map((p, i) => (
+                <li data-reveal style={`--delay: ${(i % 3) * 0.08}s; --c:${sectionColors[key]}`}>
+                  <span class="distance">
+                    <Icon name="pin" size={14} />
+                    {p.distance}
+                  </span>
+                  <h3>{p.title}</h3>
+                  <p>{p.text}</p>
+                  <button type="button" class="on-map" data-show={p.id}>
+                    <Icon name="compass" size={16} />
+                    {s.location.onMap}
+                    <span class="sr-only">: {p.title}</span>
+                  </button>
+                </li>
+              ))}
+          </ul>
+        </div>
+      </section>
+    ))
+  }
+
+  <section class="section section--dark">
+    <div class="wrap back" data-reveal>
+      <h2>{main.text[locale].name}</h2>
+      <p class="lead">{main.text[locale].tagline}</p>
+      <a class="btn btn--light" href={localizePath(locale, villaPath(main.slug))}>
+        {s.cta.discover}
+        <Icon name="arrow" size={18} />
+      </a>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .intro {
+    padding-top: clamp(56px, 8vw, 104px);
+  }
+  .intro-text {
+    display: grid;
+    gap: 22px;
+    max-width: 860px;
+    margin-inline: 0;
+  }
+  @media (min-width: 1240px) {
+    .intro-text {
+      margin-inline: auto;
+      max-width: var(--wrap);
+    }
+  }
+  .intro + :global(.loc) {
+    padding-top: clamp(40px, 5vw, 64px);
+  }
+
+  .guide-head {
+    display: flex;
+    align-items: baseline;
+    gap: 20px;
+    margin-bottom: 40px;
+  }
+  .index {
+    font-family: var(--font-display);
+    font-size: 1.1rem;
+    color: var(--c);
+  }
+
+  .places {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr));
+    gap: 16px;
+  }
+  .places li {
+    display: grid;
+    gap: 12px;
+    align-content: start;
+    justify-items: start;
+    padding: 30px;
+    border-radius: var(--r-md);
+    background: var(--sand);
+    border: 1px solid rgba(59, 47, 34, 0.08);
+    border-top: 3px solid var(--c);
+    transition: transform 0.4s var(--ease);
+  }
+  .section--light .places li {
+    background: var(--sand-light);
+  }
+  .places li:hover {
+    transform: translateY(-4px);
+  }
+  .places p {
+    color: var(--ink-soft);
+  }
+  .distance {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 12px;
+    border-radius: var(--r-pill);
+    background: var(--olive-tint);
+    color: var(--olive-deep);
+    font-size: 0.8rem;
+    font-weight: 600;
+  }
+  .on-map {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 4px;
+    padding: 8px 14px;
+    border: 1px solid var(--stone);
+    border-radius: var(--r-pill);
+    background: transparent;
+    color: var(--ink);
+    font: 600 0.84rem/1 var(--font-body);
+    cursor: pointer;
+    transition:
+      background-color 0.25s var(--ease),
+      color 0.25s var(--ease),
+      border-color 0.25s var(--ease);
+  }
+  .on-map:hover {
+    background: var(--ink);
+    border-color: var(--ink);
+    color: var(--sand-light);
+  }
+
+  .back {
+    display: grid;
+    gap: 20px;
+    justify-items: center;
+    text-align: center;
+  }
+</style>
+
+<script>
+  document.querySelectorAll<HTMLButtonElement>('[data-show]').forEach((b) =>
+    b.addEventListener('click', () => window.dispatchEvent(new CustomEvent('explorer:select', { detail: b.dataset.show }))),
+  );
+</script>

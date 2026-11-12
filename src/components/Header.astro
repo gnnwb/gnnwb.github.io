@@ -1,0 +1,349 @@
+---
+import Icon from './Icon.astro';
+import Logo from './Logo.astro';
+import { locales, localeNames, localizePath, t, type Locale } from '../i18n';
+import { villas, villaPath } from '../data/villas';
+
+interface Props {
+  locale: Locale;
+  path: string;
+  overlay?: boolean;
+}
+
+const { locale, path, overlay = false } = Astro.props;
+const s = t(locale);
+const villasHref = villas.length === 1 ? localizePath(locale, villaPath(villas[0].slug)) : localizePath(locale, '/#villas');
+const links = [
+  { href: villasHref, label: villas.length === 1 ? villas[0].text[locale].name : s.nav.villas, match: '/villas/' },
+  { href: localizePath(locale, '/explore/'), label: s.nav.explore, match: '/explore/' },
+  { href: localizePath(locale, '/contact/'), label: s.nav.contact, match: '/contact/' },
+];
+const airbnb = villas.find((v) => path === villaPath(v.slug))?.airbnbUrl ?? villas[0]?.airbnbUrl;
+---
+
+<header class:list={['site-header', { 'site-header--overlay': overlay }]} data-header>
+  <div class="wrap bar">
+    <a href={localizePath(locale, '/')} class="brand">
+      <Logo />
+    </a>
+
+    <nav class="nav" aria-label="Main">
+      <ul>
+        {
+          links.map((l) => (
+            <li>
+              <a href={l.href} aria-current={path.startsWith(l.match) ? 'page' : undefined}>
+                {l.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    <div class="actions">
+      <details class="lang" data-lang>
+        <summary>
+          <Icon name="globe" size={18} />
+          <span class="sr-only">{s.nav.language}: </span>
+          <span>{locale.toUpperCase()}</span>
+          <Icon name="down" size={14} />
+        </summary>
+        <ul>
+          {
+            locales.map((l) => (
+              <li>
+                <a href={localizePath(l, path)} hreflang={l} lang={l} aria-current={l === locale ? 'true' : undefined}>
+                  {localeNames[l]}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </details>
+      {
+        airbnb && (
+          <a class="btn btn--primary cta" href={airbnb} target="_blank" rel="noopener">
+            {s.cta.airbnb}
+          </a>
+        )
+      }
+      <button class="menu-btn" type="button" aria-expanded="false" aria-controls="mobile-nav" data-menu-open>
+        <Icon name="menu" size={24} />
+        <span class="sr-only">{s.nav.menu}</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- Outside <header>: its backdrop-filter would otherwise trap this fixed panel inside the header bar. -->
+<div class="mobile-nav" id="mobile-nav" hidden data-menu>
+    <div class="wrap mobile-top">
+      <Logo />
+      <button class="menu-btn" type="button" data-menu-close>
+        <Icon name="close" size={24} />
+        <span class="sr-only">{s.nav.close}</span>
+      </button>
+    </div>
+    <nav class="wrap mobile-links" aria-label="Main">
+      <a href={localizePath(locale, '/')}>Belle Helene</a>
+      {links.map((l) => <a href={l.href}>{l.label}</a>)}
+    </nav>
+    <div class="wrap mobile-langs">
+      {
+        locales.map((l) => (
+          <a href={localizePath(l, path)} hreflang={l} lang={l} aria-current={l === locale ? 'true' : undefined}>
+            {l.toUpperCase()}
+          </a>
+        ))
+      }
+    </div>
+</div>
+
+<style>
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: rgba(239, 230, 216, 0.92);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(59, 47, 34, 0.08);
+    transition:
+      background-color 0.35s var(--ease),
+      color 0.35s var(--ease),
+      border-color 0.35s var(--ease);
+  }
+
+  .site-header--overlay {
+    position: fixed;
+    inset: 0 0 auto 0;
+    background: transparent;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    border-color: transparent;
+    color: #fff;
+  }
+
+  .site-header--overlay.is-scrolled {
+    background: rgba(239, 230, 216, 0.94);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-color: rgba(59, 47, 34, 0.08);
+    color: var(--ink);
+  }
+
+  .bar {
+    height: var(--header-h);
+    display: flex;
+    align-items: center;
+    gap: 24px;
+  }
+
+  .brand {
+    text-decoration: none;
+    margin-right: auto;
+  }
+
+  .nav ul {
+    display: flex;
+    gap: 34px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .nav a {
+    display: inline-block;
+    padding: 8px 14px;
+    border-radius: var(--r-pill);
+    font-weight: 500;
+    font-size: 0.97rem;
+    transition: background-color 0.3s var(--ease);
+  }
+  .nav ul {
+    gap: 6px;
+  }
+
+  .nav a:hover {
+    background: rgba(59, 47, 34, 0.07);
+  }
+  .nav a[aria-current='page'] {
+    background: rgba(59, 47, 34, 0.1);
+  }
+  .site-header--overlay:not(.is-scrolled) .nav a:hover {
+    background: rgba(255, 255, 255, 0.14);
+  }
+  .site-header--overlay:not(.is-scrolled) .nav a[aria-current='page'] {
+    background: rgba(255, 255, 255, 0.2);
+  }
+
+  .actions {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .lang {
+    position: relative;
+  }
+
+  .lang summary {
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.85rem;
+    letter-spacing: 0.04em;
+    padding: 10px 8px;
+    border-radius: var(--r-pill);
+  }
+  .lang summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .lang ul {
+    position: absolute;
+    right: 0;
+    top: calc(100% + 8px);
+    min-width: 170px;
+    list-style: none;
+    margin: 0;
+    padding: 8px;
+    background: var(--sand-light);
+    color: var(--ink);
+    border-radius: var(--r-md);
+    box-shadow: 0 18px 40px -16px rgba(43, 36, 28, 0.35);
+  }
+
+  .lang ul a {
+    display: block;
+    padding: 9px 14px;
+    border-radius: var(--r-sm);
+    text-decoration: none;
+    font-size: 0.95rem;
+  }
+  .lang ul a:hover {
+    background: var(--stone);
+  }
+  .lang ul a[aria-current] {
+    font-weight: 600;
+    color: var(--clay);
+  }
+
+  .site-header--overlay:not(.is-scrolled) .cta {
+    background: var(--sand-light);
+    color: var(--ink);
+  }
+
+  .menu-btn {
+    display: none;
+    background: none;
+    border: 0;
+    color: inherit;
+    padding: 8px;
+    margin-right: -8px;
+    cursor: pointer;
+  }
+
+  .mobile-nav {
+    position: fixed;
+    inset: 0;
+    z-index: 60;
+    background: var(--sand);
+    color: var(--ink);
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+  }
+  .mobile-nav[hidden] {
+    display: none;
+  }
+
+  .mobile-top {
+    height: var(--header-h);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .mobile-links {
+    display: grid;
+    gap: 6px;
+    padding-top: 32px;
+    padding-bottom: 32px;
+  }
+
+  .mobile-links a {
+    font-family: var(--font-display);
+    font-size: 2.1rem;
+    line-height: 1.25;
+    text-decoration: none;
+  }
+
+  .mobile-langs {
+    margin-top: auto;
+    padding-bottom: 40px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .mobile-langs a {
+    min-width: 52px;
+    text-align: center;
+    padding: 10px 12px;
+    border: 1px solid var(--stone);
+    border-radius: var(--r-pill);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.9rem;
+  }
+  .mobile-langs a[aria-current] {
+    background: var(--ink);
+    border-color: var(--ink);
+    color: var(--sand-light);
+  }
+
+  @media (max-width: 960px) {
+    .nav,
+    .cta {
+      display: none;
+    }
+    .menu-btn {
+      display: inline-flex;
+    }
+  }
+</style>
+
+<script>
+  const header = document.querySelector<HTMLElement>('[data-header]');
+  if (header?.classList.contains('site-header--overlay')) {
+    const onScroll = () => header.classList.toggle('is-scrolled', window.scrollY > 40);
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+  }
+
+  const menu = document.querySelector<HTMLElement>('[data-menu]');
+  const openBtn = document.querySelector<HTMLButtonElement>('[data-menu-open]');
+  const closeBtn = document.querySelector<HTMLButtonElement>('[data-menu-close]');
+  const setOpen = (open: boolean) => {
+    if (!menu || !openBtn) return;
+    menu.hidden = !open;
+    openBtn.setAttribute('aria-expanded', String(open));
+    document.body.style.overflow = open ? 'hidden' : '';
+    (open ? closeBtn : openBtn)?.focus();
+  };
+  openBtn?.addEventListener('click', () => setOpen(true));
+  closeBtn?.addEventListener('click', () => setOpen(false));
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && menu && !menu.hidden) setOpen(false);
+  });
+
+  // Close the language dropdown when clicking elsewhere.
+  const lang = document.querySelector<HTMLDetailsElement>('[data-lang]');
+  document.addEventListener('click', (e) => {
+    if (lang?.open && !lang.contains(e.target as Node)) lang.open = false;
+  });
+</script>

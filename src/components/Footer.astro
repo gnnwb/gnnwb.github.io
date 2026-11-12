@@ -1,0 +1,158 @@
+---
+import Icon from './Icon.astro';
+import Logo from './Logo.astro';
+import { localizePath, t, type Locale } from '../i18n';
+import { site } from '../data/site';
+import { villas, villaPath } from '../data/villas';
+
+interface Props {
+  locale: Locale;
+  path: string;
+}
+
+const { locale } = Astro.props;
+const s = t(locale);
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <div class="wrap grid">
+    <div class="about">
+      <Logo />
+      <p>{s.footer.tagline}</p>
+    </div>
+
+    <div>
+      <h2 class="h">{s.nav.villas}</h2>
+      <ul>
+        {
+          villas.map((v) => (
+            <li>
+              <a href={localizePath(locale, villaPath(v.slug))}>{v.text[locale].name}</a>
+            </li>
+          ))
+        }
+        <li><a href={localizePath(locale, '/explore/')}>{s.nav.explore}</a></li>
+      </ul>
+    </div>
+
+    <div>
+      <h2 class="h">{s.nav.contact}</h2>
+      <ul>
+        <li><a href={site.phoneHref}>{site.phone}</a></li>
+        <li><a href={`mailto:${site.email}`}>{site.email}</a></li>
+        <li class="muted">{s.contact.address}</li>
+      </ul>
+    </div>
+
+    <div>
+      <h2 class="h">{s.footer.follow}</h2>
+      <div class="social">
+        <a href={site.facebook} target="_blank" rel="noopener" aria-label="Facebook"><Icon name="facebook" size={20} /></a>
+        <a href={site.youtube} target="_blank" rel="noopener" aria-label="YouTube"><Icon name="youtube" size={20} /></a>
+      </div>
+    </div>
+  </div>
+
+  <div class="wrap legal">
+    <span>© {year} Belle Helene Villas. {s.footer.rights}</span>
+    <a href={localizePath(locale, '/privacy/')}>{s.footer.privacy}</a>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    background: var(--night);
+    color: var(--on-dark);
+    padding-top: clamp(56px, 8vw, 96px);
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: 1.6fr 1fr 1.3fr 0.8fr;
+    gap: 40px;
+  }
+
+  .about p {
+    margin-top: 20px;
+    color: var(--on-dark-soft);
+    max-width: 32ch;
+  }
+
+  .h {
+    font-family: var(--font-body);
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--on-dark-soft);
+    margin-bottom: 18px;
+  }
+
+  ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 10px;
+  }
+
+  a {
+    transition: color 0.2s var(--ease);
+  }
+  ul a:hover,
+  .legal a:hover {
+    color: #fff;
+  }
+  ul a {
+    color: var(--on-dark);
+  }
+
+  .muted {
+    color: var(--on-dark-soft);
+  }
+
+  .social {
+    display: flex;
+    gap: 10px;
+  }
+  .social a {
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: 1px solid rgba(243, 235, 221, 0.25);
+    transition: background-color 0.25s var(--ease);
+  }
+  .social a:hover {
+    background: rgba(243, 235, 221, 0.12);
+  }
+
+  .legal {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: clamp(48px, 7vw, 80px);
+    padding-top: 24px;
+    padding-bottom: 28px;
+    border-top: 1px solid rgba(243, 235, 221, 0.14);
+    font-size: 0.88rem;
+    color: var(--on-dark-soft);
+  }
+
+  @media (max-width: 860px) {
+    .grid {
+      grid-template-columns: 1fr 1fr;
+    }
+    .about {
+      grid-column: 1 / -1;
+    }
+  }
+  @media (max-width: 480px) {
+    .grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

@@ -1,0 +1,15 @@
+---
+import VillaPage from '../../../components/pages/VillaPage.astro';
+import { prefixedLocales, type Locale } from '../../../i18n';
+import { villas, type Villa } from '../../../data/villas';
+
+export function getStaticPaths() {
+  return prefixedLocales.flatMap((lang) =>
+    villas.map((villa) => ({ params: { lang, slug: villa.slug }, props: { villa } })),
+  );
+}
+const { villa } = Astro.props as { villa: Villa };
+const locale = Astro.params.lang as Locale;
+---
+
+<VillaPage locale={locale} villa={villa} />

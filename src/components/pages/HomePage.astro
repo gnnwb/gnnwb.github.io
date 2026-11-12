@@ -1,0 +1,522 @@
+---
+import { Picture } from 'astro:assets';
+import Base from '../../layouts/Base.astro';
+import Icon from '../Icon.astro';
+import VillaCard from '../VillaCard.astro';
+import LocationExplorer from '../LocationExplorer.astro';
+import { localizePath, t, type Locale } from '../../i18n';
+import { villas, villaPath } from '../../data/villas';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const s = t(locale);
+const main = villas[0];
+const [introA, introB] = main.featured;
+const n = s.home.numbers;
+const numbers = [
+  { value: String(main.stats.bedrooms), label: n.bedrooms },
+  { value: String(main.stats.guests), label: n.guests },
+  { value: '45 m²', label: n.pool },
+  { value: `${main.stats.plotM2.toLocaleString(locale)} m²`, label: n.garden },
+  { value: '10′', label: n.village },
+];
+const momentIcons = ['sun', 'wave', 'moon'] as const;
+const serviceIcons = ['chef', 'car', 'compass', 'spa'] as const;
+---
+
+<Base
+  locale={locale}
+  path="/"
+  title={s.meta.homeTitle}
+  description={s.meta.homeDescription}
+  image={main.hero}
+  overlayHeader
+>
+  <section class="hero">
+    <Picture
+      src={main.hero}
+      alt=""
+      widths={[640, 1024, 1500]}
+      sizes="100vw"
+      formats={['avif', 'webp']}
+      loading="eager"
+      fetchpriority="high"
+      class="hero-img"
+    />
+    <div class="wrap hero-content">
+      <span class="eyebrow">{s.home.eyebrow}</span>
+      <h1>{s.home.title}</h1>
+      <p class="hero-lead">{s.home.lead}</p>
+      <div class="hero-actions">
+        <a class="btn btn--light" href={localizePath(locale, villaPath(main.slug))}>
+          {s.cta.discover}
+          <Icon name="arrow" size={18} />
+        </a>
+        <a class="btn btn--on-dark" href={main.airbnbUrl} target="_blank" rel="noopener">{s.cta.airbnb}</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section intro">
+    <div class="wrap intro-grid">
+      <div class="intro-text" data-reveal>
+        <span class="eyebrow">{s.home.introEyebrow}</span>
+        <h2>{s.home.introTitle}</h2>
+        <p class="lead">{s.home.introText}</p>
+        <a class="link-arrow" href={localizePath(locale, villaPath(main.slug))}>
+          {s.cta.discover}
+          <Icon name="arrow" size={18} />
+        </a>
+      </div>
+      <div class="intro-media" data-reveal style="--delay: 0.15s">
+        {introA && (
+          <div class="media shape-c a">
+            <Picture src={introA} alt="" widths={[480, 800]} sizes="(min-width: 960px) 30vw, 70vw" formats={['avif', 'webp']} />
+          </div>
+        )}
+        {introB && (
+          <div class="media shape-a b">
+            <Picture src={introB} alt="" widths={[360, 600]} sizes="(min-width: 960px) 20vw, 45vw" formats={['avif', 'webp']} />
+          </div>
+        )}
+      </div>
+    </div>
+
+    <div class="wrap">
+      <ol class="pillars">
+        {
+          s.home.pillars.map((p, i) => (
+            <li data-reveal style={`--delay: ${i * 0.1}s`}>
+              <span class="num">0{i + 1}</span>
+              <h3>{p.title}</h3>
+              <p>{p.text}</p>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </section>
+
+  <section class="numbers" aria-label={main.text[locale].name}>
+    <ul class="wrap numbers-list">
+      {
+        numbers.map((n, i) => (
+          <li data-reveal style={`--delay: ${i * 0.06}s`}>
+            <strong>{n.value}</strong>
+            <span>{n.label}</span>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+
+  <section class="section section--light" id="villas">
+    <div class="wrap">
+      <div class="section-head" data-reveal>
+        <span class="eyebrow">{s.home.villasEyebrow}</span>
+        <h2>{s.home.villasTitle}</h2>
+        <p class="lead">{s.home.villasLead}</p>
+      </div>
+      <div class:list={['villas', { 'villas--grid': villas.length > 1 }]}>
+        {villas.map((v) => <VillaCard villa={v} locale={locale} featured={villas.length === 1} />)}
+      </div>
+    </div>
+  </section>
+
+  <section class="section day">
+    <div class="wrap">
+      <div class="section-head" data-reveal>
+        <span class="eyebrow">{s.home.dayEyebrow}</span>
+        <h2>{s.home.dayTitle}</h2>
+      </div>
+      <ol class="moments">
+        {
+          s.home.moments.map((m, i) => (
+            <li data-reveal style={`--delay: ${i * 0.12}s`}>
+              <div class="media">
+                <Picture src={main.moments[i]} alt="" widths={[400, 700]} sizes="(min-width: 960px) 30vw, 90vw" formats={['avif', 'webp']} />
+              </div>
+              <span class="time">
+                <Icon name={momentIcons[i]} size={16} />
+                {m.time}
+              </span>
+              <h3>{m.title}</h3>
+              <p>{m.text}</p>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </section>
+
+  <section class="section section--dark services">
+    <div class="wrap services-grid">
+      <div class="services-head" data-reveal>
+        <span class="eyebrow">{s.home.servicesEyebrow}</span>
+        <h2>{s.home.servicesTitle}</h2>
+        <p class="lead">{s.home.servicesLead}</p>
+        <small>{s.home.servicesNote}</small>
+        <a class="btn btn--on-dark" href={localizePath(locale, '/contact/')}>{s.cta.contact}</a>
+      </div>
+      <ul class="service-list">
+        {
+          s.home.services.map((sv, i) => (
+            <li data-reveal style={`--delay: ${i * 0.08}s`}>
+              <span class="service-icon">
+                <Icon name={serviceIcons[i]} size={24} />
+              </span>
+              <h3>{sv.title}</h3>
+              <p>{sv.text}</p>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <LocationExplorer
+    locale={locale}
+    villa={main}
+    eyebrow={s.home.locationEyebrow}
+    title={s.home.locationTitle}
+    lead={s.home.locationText}
+    initialSection="nearby"
+    light
+  >
+    <a slot="head" class="link-arrow" href={localizePath(locale, '/explore/')}>
+      {s.home.exploreLink}
+      <Icon name="arrow" size={18} />
+    </a>
+  </LocationExplorer>
+
+  <section class="cta-band">
+    <div class="wrap cta-inner" data-reveal>
+      <div>
+        <h2>{s.home.ctaTitle}</h2>
+        <p>{s.home.ctaText}</p>
+      </div>
+      <div class="cta-actions">
+        <a class="btn btn--light" href={main.airbnbUrl} target="_blank" rel="noopener">
+          {s.cta.airbnb}
+          <Icon name="external" size={16} />
+        </a>
+        <a class="btn btn--on-dark" href={localizePath(locale, '/contact/')}>{s.cta.contact}</a>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .hero {
+    position: relative;
+    min-height: 100svh;
+    display: flex;
+    align-items: flex-end;
+    color: #fff;
+    overflow: hidden;
+  }
+  .hero :global(.hero-img) {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    animation: hero-zoom 18s var(--ease) both;
+  }
+  .hero::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(180deg, rgba(30, 22, 14, 0.4) 0%, rgba(30, 22, 14, 0) 30%, rgba(30, 22, 14, 0.55) 60%, rgba(30, 22, 14, 0.82) 100%),
+      linear-gradient(90deg, rgba(30, 22, 14, 0.35) 0%, rgba(30, 22, 14, 0) 60%);
+  }
+  .hero h1,
+  .hero-lead {
+    text-shadow: 0 2px 24px rgba(20, 14, 8, 0.35);
+  }
+  @media (max-width: 860px) {
+    .hero-actions .btn--on-dark {
+      display: none;
+    }
+  }
+  @keyframes hero-zoom {
+    from {
+      transform: scale(1.08);
+    }
+    to {
+      transform: scale(1);
+    }
+  }
+  .hero-content {
+    position: relative;
+    z-index: 1;
+    padding-top: 140px;
+    padding-bottom: clamp(56px, 10vh, 112px);
+    display: grid;
+    gap: 22px;
+    justify-items: start;
+  }
+  .hero .eyebrow {
+    color: #fff;
+  }
+  .hero h1 {
+    max-width: 14ch;
+  }
+  .hero-lead {
+    max-width: 52ch;
+    font-size: clamp(1.05rem, 1.6vw, 1.25rem);
+    color: rgba(255, 255, 255, 0.9);
+  }
+  .hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 8px;
+  }
+  .hero .btn--on-dark {
+    border-color: rgba(255, 255, 255, 0.7);
+    color: #fff;
+  }
+
+  .intro-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(40px, 7vw, 110px);
+    align-items: center;
+  }
+  .intro-text {
+    display: grid;
+    gap: 24px;
+    justify-items: start;
+  }
+  .intro-media {
+    position: relative;
+    padding-bottom: 18%;
+  }
+  .intro-media .a {
+    width: 78%;
+    aspect-ratio: 4 / 5;
+  }
+  .intro-media .b {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    width: 46%;
+    aspect-ratio: 1;
+    border: 8px solid var(--sand);
+  }
+
+  .pillars {
+    list-style: none;
+    padding: 0;
+    margin: clamp(64px, 9vw, 120px) 0 0;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: clamp(24px, 4vw, 56px);
+  }
+  .pillars li {
+    display: grid;
+    gap: 12px;
+    align-content: start;
+    padding-top: 24px;
+    border-top: 1px solid rgba(59, 47, 34, 0.18);
+  }
+  .num {
+    font-family: var(--font-display);
+    font-size: 1rem;
+    color: var(--clay);
+  }
+  .pillars p {
+    color: var(--ink-soft);
+  }
+
+  .villas--grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 360px), 1fr));
+    gap: clamp(40px, 5vw, 64px);
+  }
+
+  .numbers {
+    background: var(--olive-deep);
+    color: #fff;
+    padding-block: clamp(40px, 5vw, 64px);
+  }
+  .numbers-list {
+    list-style: none;
+    margin-block: 0;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 24px;
+  }
+  .numbers-list li {
+    display: grid;
+    gap: 6px;
+    padding-left: 20px;
+    border-left: 1px solid rgba(255, 255, 255, 0.22);
+  }
+  .numbers-list strong {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: clamp(2rem, 3.4vw, 2.9rem);
+    line-height: 1;
+    white-space: nowrap;
+  }
+  .numbers-list span {
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.78);
+  }
+
+  .moments {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: clamp(24px, 3vw, 40px);
+  }
+  .moments li {
+    display: grid;
+    gap: 12px;
+    align-content: start;
+  }
+  .moments .media {
+    border-radius: var(--r-md);
+    aspect-ratio: 4 / 5;
+    margin-bottom: 10px;
+  }
+  .time {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--clay);
+  }
+  .moments p {
+    color: var(--ink-soft);
+  }
+
+  .services-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.4fr;
+    gap: clamp(40px, 6vw, 96px);
+    align-items: start;
+  }
+  .services-head {
+    display: grid;
+    gap: 20px;
+    justify-items: start;
+    position: sticky;
+    top: calc(var(--header-h) + 32px);
+  }
+  .services-head small {
+    color: var(--on-dark-soft);
+  }
+  .service-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  .service-list li {
+    display: grid;
+    gap: 12px;
+    align-content: start;
+    padding: 30px;
+    border-radius: var(--r-md);
+    background: rgba(243, 235, 221, 0.06);
+    border: 1px solid rgba(243, 235, 221, 0.1);
+    transition: background-color 0.3s var(--ease);
+  }
+  .service-list li:hover {
+    background: rgba(243, 235, 221, 0.1);
+  }
+  .service-list p {
+    color: var(--on-dark-soft);
+  }
+  .service-icon {
+    display: grid;
+    place-items: center;
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: var(--clay);
+    color: #fff;
+    margin-bottom: 6px;
+  }
+
+  .cta-band {
+    background: var(--clay);
+    color: #fff;
+    padding-block: clamp(56px, 8vw, 96px);
+  }
+  .cta-inner {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 40px;
+    align-items: center;
+  }
+  .cta-inner p {
+    margin-top: 16px;
+    max-width: 52ch;
+    color: rgba(255, 255, 255, 0.88);
+  }
+  .cta-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+    justify-content: flex-end;
+  }
+  .cta-band .btn--on-dark {
+    border-color: rgba(255, 255, 255, 0.7);
+    color: #fff;
+  }
+  .cta-band .btn--on-dark:hover {
+    background: #fff;
+    color: var(--clay);
+  }
+
+  @media (max-width: 960px) {
+    .intro-grid,
+    .services-grid,
+    .cta-inner {
+      grid-template-columns: 1fr;
+    }
+    .services-head {
+      position: static;
+    }
+    .numbers-list {
+      grid-template-columns: repeat(3, 1fr);
+      row-gap: 32px;
+    }
+    .moments {
+      grid-template-columns: 1fr;
+    }
+    .moments .media {
+      aspect-ratio: 16 / 10;
+    }
+    .cta-actions {
+      justify-content: flex-start;
+    }
+    .pillars {
+      grid-template-columns: 1fr;
+    }
+  }
+  @media (max-width: 600px) {
+    .numbers-list {
+      grid-template-columns: 1fr 1fr;
+    }
+    .service-list {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
