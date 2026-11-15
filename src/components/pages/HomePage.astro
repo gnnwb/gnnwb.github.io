@@ -4,6 +4,7 @@ import Base from '../../layouts/Base.astro';
 import Icon from '../Icon.astro';
 import VillaCard from '../VillaCard.astro';
 import LocationExplorer from '../LocationExplorer.astro';
+import Reviews from '../Reviews.astro';
 import { localizePath, t, type Locale } from '../../i18n';
 import { villas, villaPath } from '../../data/villas';
 
@@ -14,6 +15,7 @@ interface Props {
 const { locale } = Astro.props;
 const s = t(locale);
 const main = villas[0];
+const bookHref = `${localizePath(locale, villaPath(main.slug))}#book`;
 const [introA, introB] = main.featured;
 const n = s.home.numbers;
 const numbers = [
@@ -55,7 +57,7 @@ const serviceIcons = ['chef', 'car', 'compass', 'spa'] as const;
           {s.cta.discover}
           <Icon name="arrow" size={18} />
         </a>
-        <a class="btn btn--on-dark" href={main.airbnbUrl} target="_blank" rel="noopener">{s.cta.airbnb}</a>
+        <a class="btn btn--on-dark" href={bookHref}>{s.cta.airbnb}</a>
       </div>
     </div>
   </section>
@@ -126,6 +128,8 @@ const serviceIcons = ['chef', 'car', 'compass', 'spa'] as const;
     </div>
   </section>
 
+  <Reviews locale={locale} villa={main} plain />
+
   <section class="section day">
     <div class="wrap">
       <div class="section-head" data-reveal>
@@ -183,7 +187,7 @@ const serviceIcons = ['chef', 'car', 'compass', 'spa'] as const;
     eyebrow={s.home.locationEyebrow}
     title={s.home.locationTitle}
     lead={s.home.locationText}
-    initialSection="nearby"
+    initialSection="food"
     light
   >
     <a slot="head" class="link-arrow" href={localizePath(locale, '/explore/')}>
@@ -199,9 +203,9 @@ const serviceIcons = ['chef', 'car', 'compass', 'spa'] as const;
         <p>{s.home.ctaText}</p>
       </div>
       <div class="cta-actions">
-        <a class="btn btn--light" href={main.airbnbUrl} target="_blank" rel="noopener">
+        <a class="btn btn--light" href={bookHref}>
           {s.cta.airbnb}
-          <Icon name="external" size={16} />
+          <Icon name="arrow" size={18} />
         </a>
         <a class="btn btn--on-dark" href={localizePath(locale, '/contact/')}>{s.cta.contact}</a>
       </div>
@@ -323,7 +327,7 @@ const serviceIcons = ['chef', 'car', 'compass', 'spa'] as const;
     gap: 12px;
     align-content: start;
     padding-top: 24px;
-    border-top: 1px solid rgba(59, 47, 34, 0.18);
+    border-top: 1px solid rgba(51, 41, 31, 0.18);
   }
   .num {
     font-family: var(--font-display);
@@ -432,12 +436,12 @@ const serviceIcons = ['chef', 'car', 'compass', 'spa'] as const;
     align-content: start;
     padding: 30px;
     border-radius: var(--r-md);
-    background: rgba(243, 235, 221, 0.06);
-    border: 1px solid rgba(243, 235, 221, 0.1);
+    background: rgba(245, 239, 230, 0.06);
+    border: 1px solid rgba(245, 239, 230, 0.1);
     transition: background-color 0.3s var(--ease);
   }
   .service-list li:hover {
-    background: rgba(243, 235, 221, 0.1);
+    background: rgba(245, 239, 230, 0.1);
   }
   .service-list p {
     color: var(--on-dark-soft);
@@ -454,7 +458,10 @@ const serviceIcons = ['chef', 'car', 'compass', 'spa'] as const;
   }
 
   .cta-band {
-    background: var(--clay);
+    background:
+      radial-gradient(900px 420px at 85% 0%, rgba(227, 164, 65, 0.28), transparent 65%),
+      radial-gradient(800px 400px at 0% 100%, rgba(120, 40, 15, 0.35), transparent 65%),
+      var(--clay);
     color: #fff;
     padding-block: clamp(56px, 8vw, 96px);
   }

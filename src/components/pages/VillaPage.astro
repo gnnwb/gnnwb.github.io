@@ -4,6 +4,8 @@ import Base from '../../layouts/Base.astro';
 import Icon from '../Icon.astro';
 import Gallery from '../Gallery.astro';
 import LocationExplorer from '../LocationExplorer.astro';
+import Reviews from '../Reviews.astro';
+import Booking from '../Booking.astro';
 import { t, type Locale } from '../../i18n';
 import { villaPath, type Villa } from '../../data/villas';
 import { site } from '../../data/site';
@@ -43,6 +45,7 @@ const jsonLd = {
     addressCountry: 'GR',
   },
   geo: { '@type': 'GeoCoordinates', latitude: villa.coords.lat, longitude: villa.coords.lng },
+  hasMap: villa.mapsUrl,
   containsPlace: {
     '@type': 'Accommodation',
     numberOfBedrooms: villa.stats.bedrooms,
@@ -62,7 +65,6 @@ const jsonLd = {
   description={text.summary}
   image={villa.hero}
   overlayHeader
-  airbnbUrl={villa.airbnbUrl}
 >
   <script type="application/ld+json" slot="head" set:html={JSON.stringify(jsonLd)} />
 
@@ -118,9 +120,9 @@ const jsonLd = {
           <div><dt><Icon name="clock" size={16} />{v.checkOut}</dt><dd>{villa.checkOut}</dd></div>
         </dl>
         <small>{v.checkTimesNote}</small>
-        <a class="btn btn--primary" href={villa.airbnbUrl} target="_blank" rel="noopener">
+        <a class="btn btn--primary" href="#book">
           {s.cta.airbnb}
-          <Icon name="external" size={16} />
+          <Icon name="arrow" size={18} />
         </a>
         <div class="book-direct">
           <a href={site.phoneHref}><Icon name="phone" size={18} />{site.phone}</a>
@@ -189,6 +191,10 @@ const jsonLd = {
       <Gallery villa={villa} locale={locale} />
     </div>
   </section>
+
+  <Reviews locale={locale} villa={villa} />
+
+  <Booking locale={locale} villa={villa} />
 
   <section class="section section--light">
     <div class="wrap">
@@ -270,9 +276,9 @@ const jsonLd = {
       <h2>{v.bookTitle}</h2>
       <p>{v.bookText}</p>
       <div class="final-actions">
-        <a class="btn btn--light" href={villa.airbnbUrl} target="_blank" rel="noopener">
+        <a class="btn btn--light" href="#book">
           {s.cta.airbnb}
-          <Icon name="external" size={16} />
+          <Icon name="arrow" size={18} />
         </a>
         <a class="btn btn--on-dark" href={site.phoneHref}><Icon name="phone" size={18} />{site.phone}</a>
       </div>
@@ -333,7 +339,7 @@ const jsonLd = {
     gap: 16px;
     background: var(--sand-light);
     border-radius: var(--r-md);
-    box-shadow: 0 24px 50px -30px rgba(43, 36, 28, 0.45);
+    box-shadow: 0 24px 50px -30px rgba(51, 41, 31, 0.45);
   }
   .stats li {
     display: grid;
@@ -576,7 +582,7 @@ const jsonLd = {
     justify-items: start;
   }
   .faq-list details {
-    border-bottom: 1px solid rgba(59, 47, 34, 0.14);
+    border-bottom: 1px solid rgba(51, 41, 31, 0.14);
   }
   .faq-list summary {
     list-style: none;
@@ -606,7 +612,10 @@ const jsonLd = {
   }
 
   .final {
-    background: var(--olive-deep);
+    background:
+      radial-gradient(900px 420px at 85% 0%, rgba(227, 164, 65, 0.28), transparent 65%),
+      radial-gradient(800px 400px at 0% 100%, rgba(120, 40, 15, 0.35), transparent 65%),
+      var(--clay);
     color: #fff;
     padding-block: clamp(64px, 9vw, 112px);
     text-align: center;

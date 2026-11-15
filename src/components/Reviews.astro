@@ -1,0 +1,505 @@
+---
+import Icon from './Icon.astro';
+import { t, type Locale } from '../i18n';
+import { reviews } from '../data/reviews';
+import type { Villa } from '../data/villas';
+
+interface Props {
+  locale: Locale;
+  villa: Villa;
+  /** Sand background instead of the lighter one. */
+  plain?: boolean;
+}
+
+const { locale, villa, plain = false } = Astro.props;
+const set = reviews[villa.slug];
+const r = t(locale).reviews;
+const num = (n: number, digits: number) =>
+  n.toLocaleString(locale, { minimumFractionDigits: digits, maximumFractionDigits: digits });
+const month = new Intl.DateTimeFormat(locale, { month: 'long', year: 'numeric', timeZone: 'UTC' });
+const scoreKeys = ['cleanliness', 'accuracy', 'checkIn', 'communication', 'location', 'value'] as const;
+const star =
+  '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.8l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 16.8l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/></svg>';
+const tones = ['clay', 'olive', 'sea', 'gold'];
+---
+
+{
+  set && (
+    <section class:list={['section reviews', { 'section--light': !plain }]} aria-labelledby={`reviews-${villa.slug}`}>
+      <div class="wrap">
+        <div class="top">
+          <div class="section-head" data-reveal>
+            <span class="eyebrow">{r.eyebrow}</span>
+            <h2 id={`reviews-${villa.slug}`}>{r.title}</h2>
+            <p class="lead">{r.lead}</p>
+          </div>
+
+          <div class="score-card" data-reveal style="--delay: 0.1s">
+            <div class="score">
+              <strong>{num(set.rating, 2)}</strong>
+              <div>
+                <span class="stars stars--lg" role="img" aria-label={`${num(set.rating, 2)} ${r.outOf}`} set:html={star.repeat(5)} />
+                <a href={`${villa.airbnbUrl}/reviews`} target="_blank" rel="noopener" class="count">
+                  {r.count.replace('{count}', String(set.count))}
+                </a>
+              </div>
+            </div>
+            <ul class="bars">
+              {
+                scoreKeys.map((k) => (
+                  <li>
+                    <span>{r.scores[k]}</span>
+                    <span class="bar">
+                      <i style={`--v: ${set.scores[k] / 5}`} />
+                    </span>
+                    <b>{num(set.scores[k], 1)}</b>
+                  </li>
+                ))
+              }
+            </ul>
+          </div>
+        </div>
+
+        <ul class="badges" data-reveal style="--delay: 0.15s">
+          {set.guestFavourite && (
+            <li>
+              <span class="badge-icon heart" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><path d="M12 20.5s-7.5-4.6-7.5-10.4A4.3 4.3 0 0 1 12 7.4a4.3 4.3 0 0 1 7.5 2.7c0 5.8-7.5 10.4-7.5 10.4z" /></svg>
+              </span>
+              <span>
+                <strong>{r.guestFavourite}</strong>
+                <small>{r.guestFavouriteText}</small>
+              </span>
+            </li>
+          )}
+          {set.superhost && (
+            <li>
+              <span class="badge-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><circle cx="12" cy="9" r="6" /><path d="m8.5 14 -1.5 7 5-2.5 5 2.5-1.5-7" /></svg>
+              </span>
+              <span>
+                <strong>{r.superhost}</strong>
+                <small>{r.superhostText}</small>
+              </span>
+            </li>
+          )}
+          {set.topPercent && (
+            <li>
+              <span class="badge-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><path d="M4 18h16M6 18l-1.5-9 4.5 3.5L12 6l3 6.5L19.5 9 18 18" /></svg>
+              </span>
+              <span>
+                <strong>{r.top.replace('{n}', String(set.topPercent))}</strong>
+                <small>{r.topText}</small>
+              </span>
+            </li>
+          )}
+        </ul>
+      </div>
+
+      <div class="carousel" data-carousel data-reveal style="--delay: 0.1s">
+        <ul class="track" data-track tabindex="0" aria-label={r.title}>
+          {
+            set.items.map((item, i) => (
+              <li class="card">
+                <span class="quote" aria-hidden="true">“</span>
+                <span class="stars" role="img" aria-label={`${item.rating} ${r.outOf}`} set:html={star.repeat(item.rating)} />
+                <blockquote lang="en">
+                  <p>{item.text}</p>
+                </blockquote>
+                <footer>
+                  <span class:list={['avatar', `tone-${tones[i % tones.length]}`]} aria-hidden="true">
+                    {item.name[0]}
+                  </span>
+                  <span>
+                    <strong>{item.name}</strong>
+                    <small>
+                      {[item.from, month.format(new Date(`${item.date}-15T00:00:00Z`))].filter(Boolean).join(' · ')}
+                    </small>
+                  </span>
+                </footer>
+              </li>
+            ))
+          }
+        </ul>
+        <div class="wrap controls">
+          <div class="arrows">
+            <button type="button" class="arrow" data-prev aria-label={r.previous}>
+              <Icon name="left" size={20} />
+            </button>
+            <button type="button" class="arrow" data-next aria-label={r.next}>
+              <Icon name="right" size={20} />
+            </button>
+          </div>
+          <div class="more">
+            {r.original && <small>{r.original}</small>}
+            <a class="link-arrow" href={`${villa.airbnbUrl}/reviews`} target="_blank" rel="noopener">
+              {r.readAll}
+              <Icon name="arrow" size={18} />
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+<style>
+  .reviews {
+    overflow: hidden;
+  }
+  .top {
+    display: grid;
+    grid-template-columns: 1.1fr 1fr;
+    gap: clamp(32px, 6vw, 96px);
+    align-items: end;
+  }
+  .top .section-head {
+    margin-bottom: 0;
+  }
+
+  .score-card {
+    background: var(--sand-light);
+    border-radius: var(--r-md);
+    padding: clamp(22px, 3vw, 32px);
+    box-shadow: var(--shadow-md);
+    display: grid;
+    gap: 22px;
+  }
+  .section--light .score-card {
+    background: #fff;
+  }
+  .score {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+  }
+  .score strong {
+    font-family: var(--font-display);
+    font-size: clamp(3rem, 6vw, 4.2rem);
+    font-weight: 600;
+    line-height: 1;
+    letter-spacing: -0.04em;
+    background: linear-gradient(135deg, var(--clay) 0%, var(--gold) 120%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .score div {
+    display: grid;
+    gap: 6px;
+  }
+  .count {
+    font-size: 0.92rem;
+    font-weight: 600;
+    color: var(--ink-soft);
+    text-decoration: underline;
+    text-decoration-color: var(--stone);
+    text-underline-offset: 4px;
+    transition: text-decoration-color 0.3s var(--ease), color 0.3s var(--ease);
+  }
+  .count:hover {
+    color: var(--clay);
+    text-decoration-color: currentColor;
+  }
+
+  .stars {
+    display: inline-flex;
+    gap: 2px;
+    color: var(--gold);
+  }
+  .stars :global(svg) {
+    width: 16px;
+    height: 16px;
+    fill: currentColor;
+  }
+  .stars--lg :global(svg) {
+    width: 20px;
+    height: 20px;
+  }
+
+  .bars {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px 28px;
+    font-size: 0.88rem;
+  }
+  .bars li {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 56px 28px;
+    align-items: center;
+    gap: 10px;
+    color: var(--ink-soft);
+  }
+  .bars b {
+    text-align: right;
+    color: var(--ink);
+    font-weight: 700;
+  }
+  .bar {
+    height: 6px;
+    border-radius: 99px;
+    background: var(--stone);
+    overflow: hidden;
+  }
+  .bar i {
+    display: block;
+    height: 100%;
+    width: 100%;
+    border-radius: inherit;
+    background: linear-gradient(90deg, var(--olive), var(--olive-deep));
+    transform-origin: left;
+    transform: scaleX(var(--v));
+    transition: transform 1.6s var(--ease) 0.3s;
+  }
+  :global(.js) .score-card:not(.is-visible) .bar i {
+    transform: scaleX(0);
+  }
+
+  .badges {
+    list-style: none;
+    margin: clamp(28px, 4vw, 44px) 0 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+  .badges li {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 16px 18px;
+    border-radius: var(--r-sm);
+    border: 1px solid var(--line);
+  }
+  .badges strong {
+    display: block;
+    font-size: 0.98rem;
+    line-height: 1.3;
+  }
+  .badges small {
+    display: block;
+    font-size: 0.82rem;
+    line-height: 1.4;
+    color: var(--ink-soft);
+  }
+  .badge-icon {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    background: var(--clay-tint);
+    color: var(--clay);
+  }
+  .badge-icon svg {
+    width: 24px;
+    height: 24px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.6;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .badge-icon.heart {
+    background: color-mix(in srgb, var(--gold) 24%, white);
+    color: #b0721a;
+  }
+  .badge-icon.heart svg {
+    fill: currentColor;
+    stroke: none;
+  }
+
+  /* ---------- carousel ---------- */
+
+  .carousel {
+    margin-top: clamp(36px, 5vw, 56px);
+  }
+  .track {
+    --pad: max(var(--gutter), calc((100vw - var(--wrap)) / 2 + var(--gutter)));
+    list-style: none;
+    margin: 0;
+    display: flex;
+    gap: 20px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: var(--pad);
+    padding: 12px var(--pad) 28px;
+    scrollbar-width: none;
+    overscroll-behavior-x: contain;
+  }
+  .track::-webkit-scrollbar {
+    display: none;
+  }
+  .track:focus-visible {
+    outline-offset: -4px;
+  }
+  .card {
+    position: relative;
+    flex: 0 0 clamp(280px, 30vw, 380px);
+    scroll-snap-align: start;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 30px 28px 26px;
+    border-radius: var(--r-md);
+    background: var(--sand-light);
+    box-shadow: var(--shadow-sm);
+    transition:
+      transform 0.6s var(--spring),
+      box-shadow 0.6s var(--ease);
+  }
+  .section--light .card {
+    background: #fff;
+  }
+  .card:hover {
+    transform: translateY(-6px);
+    box-shadow: var(--shadow-lg);
+  }
+  .quote {
+    position: absolute;
+    top: 6px;
+    right: 22px;
+    font-family: var(--font-display);
+    font-size: 6rem;
+    line-height: 1;
+    color: var(--clay-tint);
+    pointer-events: none;
+  }
+  blockquote {
+    margin: 0;
+    flex: 1;
+    font-size: 1rem;
+    line-height: 1.65;
+    color: var(--ink);
+  }
+  .card footer {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding-top: 16px;
+    border-top: 1px solid var(--line);
+  }
+  .card footer strong {
+    display: block;
+    line-height: 1.3;
+  }
+  .card footer small {
+    display: block;
+    color: var(--ink-soft);
+    font-size: 0.84rem;
+  }
+  .avatar {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    font-family: var(--font-display);
+    font-weight: 700;
+    color: #fff;
+  }
+  .tone-clay {
+    background: linear-gradient(135deg, var(--clay-soft), var(--clay));
+  }
+  .tone-olive {
+    background: linear-gradient(135deg, var(--olive), var(--olive-deep));
+  }
+  .tone-sea {
+    background: linear-gradient(135deg, #4b8c98, var(--sea));
+  }
+  .tone-gold {
+    background: linear-gradient(135deg, var(--gold), #c07f1c);
+  }
+
+  .controls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+  .arrows {
+    display: flex;
+    gap: 10px;
+  }
+  .arrow {
+    display: grid;
+    place-items: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    border: 1px solid var(--ink);
+    background: transparent;
+    color: var(--ink);
+    cursor: pointer;
+    transition:
+      background-color 0.3s var(--ease),
+      color 0.3s var(--ease),
+      opacity 0.3s var(--ease),
+      transform 0.4s var(--spring);
+  }
+  .arrow:hover:not(:disabled) {
+    background: var(--ink);
+    color: var(--sand-light);
+    transform: scale(1.06);
+  }
+  .arrow:disabled {
+    opacity: 0.3;
+    cursor: default;
+  }
+  .more {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+  .more small {
+    color: var(--ink-soft);
+    font-size: 0.85rem;
+  }
+
+  @media (max-width: 960px) {
+    .top {
+      grid-template-columns: 1fr;
+      align-items: start;
+    }
+    .badges {
+      grid-template-columns: 1fr;
+    }
+  }
+  @media (max-width: 520px) {
+    .bars {
+      grid-template-columns: 1fr;
+    }
+    .card {
+      flex-basis: 84vw;
+    }
+  }
+</style>
+
+<script>
+  for (const root of document.querySelectorAll<HTMLElement>('[data-carousel]')) {
+    const track = root.querySelector<HTMLElement>('[data-track]')!;
+    const prev = root.querySelector<HTMLButtonElement>('[data-prev]')!;
+    const next = root.querySelector<HTMLButtonElement>('[data-next]')!;
+    const step = () => {
+      const card = track.querySelector<HTMLElement>('.card');
+      return card ? card.offsetWidth + 20 : track.clientWidth * 0.8;
+    };
+    const update = () => {
+      prev.disabled = track.scrollLeft < 8;
+      next.disabled = track.scrollLeft + track.clientWidth > track.scrollWidth - 8;
+    };
+    prev.addEventListener('click', () => track.scrollBy({ left: -step(), behavior: 'smooth' }));
+    next.addEventListener('click', () => track.scrollBy({ left: step(), behavior: 'smooth' }));
+    track.addEventListener('scroll', update, { passive: true });
+    window.addEventListener('resize', update);
+    update();
+  }
+</script>

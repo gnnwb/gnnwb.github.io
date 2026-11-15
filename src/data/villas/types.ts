@@ -39,7 +39,11 @@ export interface Villa {
   /** Position on the homepage and in menus. */
   order: number;
   airbnbUrl: string;
+  /** Private Airbnb iCal export link (Availability → Sync calendars → Export). Read from an env variable. */
+  ical?: string;
   coords: { lat: number; lng: number };
+  /** The villa's own Google Maps place page. */
+  mapsUrl: string;
   stats: { bedrooms: number; bathrooms: number; guests: number; interiorM2: number; plotM2: number };
   checkIn: string;
   checkOut: string;

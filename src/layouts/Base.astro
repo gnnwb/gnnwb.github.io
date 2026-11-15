@@ -6,7 +6,7 @@ import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import MobileBar from '../components/MobileBar.astro';
 import { locales, localizePath, t, type Locale } from '../i18n';
-import { villas } from '../data/villas';
+import { villas, villaPath } from '../data/villas';
 
 interface Props {
   locale: Locale;
@@ -17,10 +17,11 @@ interface Props {
   image?: ImageMetadata;
   /** Transparent header on top of a full-bleed hero. */
   overlayHeader?: boolean;
-  airbnbUrl?: string;
 }
 
-const { locale, path, title, description, image, overlayHeader = false, airbnbUrl } = Astro.props;
+const { locale, path, title, description, image, overlayHeader = false } = Astro.props;
+const bookVilla = villas.find((v) => path === villaPath(v.slug)) ?? villas[0];
+const bookHref = bookVilla ? `${localizePath(locale, villaPath(bookVilla.slug))}#book` : undefined;
 const strings = t(locale);
 const site = Astro.site ?? new URL('https://villabellehelene.gr');
 const canonical = new URL(localizePath(locale, path), site).href;
@@ -42,7 +43,7 @@ const ogLocale: Record<Locale, string> = { en: 'en_US', el: 'el_GR', de: 'de_DE'
     <link rel="alternate" hreflang="x-default" href={new URL(localizePath('en', path), site).href} />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="sitemap" href="/sitemap-index.xml" />
-    <meta name="theme-color" content="#efe6d8" />
+    <meta name="theme-color" content="#f4ede2" />
 
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Belle Helene Villas" />
@@ -65,7 +66,7 @@ const ogLocale: Record<Locale, string> = { en: 'en_US', el: 'el_GR', de: 'de_DE'
       <slot />
     </main>
     <Footer locale={locale} path={path} />
-    <MobileBar locale={locale} airbnbUrl={airbnbUrl ?? villas[0]?.airbnbUrl} />
+    <MobileBar locale={locale} bookHref={bookHref} />
 
     <script is:inline>
       // Fade sections in as they scroll into view. Inline so it runs before first paint;

@@ -17,7 +17,10 @@ const villa: Villa = {
   slug: 'belle-helene',
   order: 1,
   airbnbUrl: 'https://www.airbnb.com/rooms/25046172',
-  coords: { lat: 35.3099702, lng: 25.3782826 },
+  ical: import.meta.env.AIRBNB_ICAL_BELLE_HELENE,
+  // From the villa's Google Maps listing.
+  coords: { lat: 35.3097706, lng: 25.3795591 },
+  mapsUrl: 'https://www.google.com/maps/place/Villa+Belle+Helene/@35.3097706,25.3795591,17z/data=!4m6!3m5!1s0x149a65a7a9f73999:0x3e49d5d058c6aeaf!8m2!3d35.3097706!4d25.3795591!16s%2Fg%2F11g0nrwnk_',
   stats: { bedrooms: 4, bathrooms: 2, guests: 8, interiorM2: 200, plotM2: 1000 },
   checkIn: '15:00',
   checkOut: '11:00',

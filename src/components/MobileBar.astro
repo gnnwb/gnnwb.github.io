@@ -5,10 +5,10 @@ import { site } from '../data/site';
 
 interface Props {
   locale: Locale;
-  airbnbUrl?: string;
+  bookHref?: string;
 }
 
-const { locale, airbnbUrl } = Astro.props;
+const { locale, bookHref } = Astro.props;
 const s = t(locale);
 ---
 
@@ -22,8 +22,8 @@ const s = t(locale);
     <span>{s.cta.email}</span>
   </a>
   {
-    airbnbUrl && (
-      <a class="btn btn--primary book" href={airbnbUrl} target="_blank" rel="noopener">
+    bookHref && (
+      <a class="btn btn--primary book" href={bookHref}>
         {s.cta.airbnb}
       </a>
     )
@@ -46,11 +46,11 @@ const s = t(locale);
       align-items: center;
       gap: 6px;
       padding: 6px;
-      background: rgba(248, 242, 232, 0.96);
+      background: color-mix(in srgb, var(--sand-light) 94%, transparent);
       backdrop-filter: blur(10px);
       -webkit-backdrop-filter: blur(10px);
       border-radius: var(--r-pill);
-      box-shadow: 0 14px 34px -14px rgba(43, 36, 28, 0.45);
+      box-shadow: 0 14px 34px -14px rgba(51, 41, 31, 0.45);
     }
   }
 

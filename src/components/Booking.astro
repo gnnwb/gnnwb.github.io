@@ -1,0 +1,657 @@
+---
+import Icon from './Icon.astro';
+import ContactForm from './ContactForm.astro';
+import { t, type Locale } from '../i18n';
+import { getAvailability } from '../data/availability';
+import type { Villa } from '../data/villas';
+
+interface Props {
+  locale: Locale;
+  villa: Villa;
+}
+
+const { locale, villa } = Astro.props;
+const s = t(locale);
+const b = s.booking;
+const availability = await getAvailability(villa.ical);
+const updated = new Intl.DateTimeFormat(locale, { day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Athens' }).format(
+  new Date(availability.updated),
+);
+---
+
+<section class="section booking" id="book" aria-labelledby={`book-${villa.slug}`}>
+  <div class="wrap">
+    <div class="section-head" data-reveal>
+      <span class="eyebrow">{b.eyebrow}</span>
+      <h2 id={`book-${villa.slug}`}>{b.title}</h2>
+      <p class="lead">{b.lead}</p>
+    </div>
+
+    <div
+      class="grid"
+      data-booking
+      data-booked={JSON.stringify(availability.booked)}
+      data-locale={locale}
+      data-msg-arrival={b.selectArrival}
+      data-msg-departure={b.selectDeparture}
+      data-msg-night={b.night}
+      data-msg-nights={b.nights}
+      data-msg-unavailable={b.unavailable}
+      data-msg-unavailable-day={b.unavailableDay}
+      data-msg-departure-only={b.departureOnly}
+    >
+      <div class="cal-card" data-reveal>
+        <div class="cal-nav">
+          <button type="button" class="nav-btn" data-cal-prev aria-label={b.prevMonth}>
+            <Icon name="left" size={20} />
+          </button>
+          <button type="button" class="nav-btn" data-cal-next aria-label={b.nextMonth}>
+            <Icon name="right" size={20} />
+          </button>
+        </div>
+        <div class="months" data-months aria-live="polite"></div>
+        <noscript><p class="cal-note">{b.selectArrival}</p></noscript>
+
+        <div class="summary">
+          <p data-summary aria-live="polite">{b.selectArrival}</p>
+          <button type="button" class="clear" data-clear hidden>{b.clear}</button>
+        </div>
+
+        <div class="cal-foot">
+          <ul class="legend">
+            <li><i class="sw sw--free"></i>{b.available}</li>
+            <li><i class="sw sw--booked"></i>{b.booked}</li>
+            <li><i class="sw sw--selected"></i>{b.selected}</li>
+          </ul>
+          {
+            availability.synced && (
+              <p class="cal-note">
+                <span class="pulse" aria-hidden="true" />
+                {b.synced.replace('{date}', updated)}
+              </p>
+            )
+          }
+        </div>
+      </div>
+
+      <div class="form-card" data-reveal style="--delay: 0.1s">
+        <div class="form-head">
+          <h3>{b.formTitle}</h3>
+          <p>
+            <Icon name="clock" size={16} />
+            {b.times.replace('{in}', villa.checkIn).replace('{out}', villa.checkOut)}
+          </p>
+        </div>
+        <ContactForm locale={locale} maxGuests={villa.stats.guests} variant="booking" />
+        <p class="confirm">{b.confirmNote}</p>
+        <a class="link-arrow airbnb" href={villa.airbnbUrl} target="_blank" rel="noopener">
+          {b.airbnb}
+          <Icon name="external" size={16} />
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .booking {
+    background:
+      radial-gradient(900px 480px at 100% 0%, color-mix(in srgb, var(--sea-tint) 70%, transparent), transparent 70%),
+      radial-gradient(700px 420px at 0% 100%, color-mix(in srgb, var(--clay-tint) 55%, transparent), transparent 70%),
+      var(--sand);
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+    gap: clamp(20px, 3vw, 32px);
+    align-items: start;
+  }
+  .cal-card,
+  .form-card {
+    background: var(--sand-light);
+    border-radius: var(--r-lg);
+    box-shadow: var(--shadow-md);
+    padding: clamp(20px, 3vw, 36px);
+  }
+  .cal-card {
+    position: relative;
+    container-type: inline-size;
+  }
+  .form-card {
+    display: grid;
+    gap: 20px;
+  }
+  .form-head {
+    display: grid;
+    gap: 6px;
+  }
+  .form-head p {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.9rem;
+    color: var(--ink-soft);
+  }
+  .form-card :global(input),
+  .form-card :global(textarea),
+  .form-card :global(select) {
+    background: var(--sand);
+  }
+  .confirm {
+    font-size: 0.88rem;
+    color: var(--ink-soft);
+    padding-top: 16px;
+    border-top: 1px solid var(--line);
+  }
+  .airbnb {
+    font-size: 0.95rem;
+    justify-self: start;
+  }
+
+  /* ---------- calendar ---------- */
+
+  .cal-nav {
+    position: absolute;
+    top: clamp(16px, 2.6vw, 30px);
+    left: clamp(14px, 2.4vw, 28px);
+    right: clamp(14px, 2.4vw, 28px);
+    display: flex;
+    justify-content: space-between;
+    pointer-events: none;
+  }
+  .nav-btn {
+    pointer-events: auto;
+    display: grid;
+    place-items: center;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    border: 1px solid var(--line);
+    background: var(--sand-light);
+    color: var(--ink);
+    cursor: pointer;
+    transition:
+      background-color 0.3s var(--ease),
+      color 0.3s var(--ease),
+      opacity 0.3s var(--ease),
+      transform 0.4s var(--spring);
+  }
+  .nav-btn:hover:not(:disabled) {
+    background: var(--ink);
+    color: var(--sand-light);
+    transform: scale(1.06);
+  }
+  .nav-btn:disabled {
+    opacity: 0.3;
+    cursor: default;
+  }
+
+  .months {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(20px, 4cqi, 40px);
+    min-height: 360px;
+  }
+  @container (max-width: 470px) {
+    .months {
+      grid-template-columns: 1fr;
+      min-height: 0;
+    }
+    .months :global(.month + .month) {
+      display: none;
+    }
+  }
+  .months :global(.month) {
+    animation: month-in 0.5s var(--ease) both;
+  }
+  .months :global(.month.from-left) {
+    animation-name: month-in-left;
+  }
+  @keyframes month-in {
+    from {
+      opacity: 0;
+      transform: translateX(18px);
+    }
+  }
+  @keyframes month-in-left {
+    from {
+      opacity: 0;
+      transform: translateX(-18px);
+    }
+  }
+  .months :global(h4) {
+    font-family: var(--font-display);
+    font-size: 1.1rem;
+    font-weight: 600;
+    text-align: center;
+    line-height: 42px;
+    margin-bottom: 14px;
+    text-transform: capitalize;
+  }
+  .months :global(.dow),
+  .months :global(.days) {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+  }
+  .months :global(.dow) {
+    margin-bottom: 6px;
+  }
+  .months :global(.dow span) {
+    text-align: center;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+  .months :global(.days) {
+    row-gap: 4px;
+  }
+
+  .months :global(.day) {
+    --fill: transparent;
+    position: relative;
+    aspect-ratio: 1;
+    max-height: 48px;
+    width: 100%;
+    display: grid;
+    place-items: center;
+    border: 0;
+    padding: 0;
+    background: transparent;
+    font: 600 0.92rem/1 var(--font-body);
+    color: var(--ink);
+    cursor: pointer;
+    isolation: isolate;
+  }
+  /* Range band behind the circles. */
+  .months :global(.day::before) {
+    content: '';
+    position: absolute;
+    inset: 4px 0;
+    z-index: -2;
+    background: var(--fill);
+    transition: background-color 0.25s var(--ease);
+  }
+  /* The circle. */
+  .months :global(.day::after) {
+    content: '';
+    position: absolute;
+    inset: 4px;
+    z-index: -1;
+    border-radius: 50%;
+    max-width: 40px;
+    max-height: 40px;
+    margin: auto;
+    transition:
+      background-color 0.25s var(--ease),
+      box-shadow 0.25s var(--ease),
+      transform 0.35s var(--spring);
+  }
+  .months :global(.day:hover:not(:disabled)::after) {
+    box-shadow: inset 0 0 0 1.5px var(--ink);
+  }
+  .months :global(.day.is-today) {
+    color: var(--clay);
+  }
+  .months :global(.day.is-today::after) {
+    box-shadow: inset 0 0 0 1.5px var(--clay-tint);
+  }
+  .months :global(.day:disabled) {
+    cursor: default;
+    color: color-mix(in srgb, var(--ink) 32%, transparent);
+  }
+  .months :global(.day.is-booked) {
+    text-decoration: line-through;
+    text-decoration-color: color-mix(in srgb, var(--ink) 30%, transparent);
+  }
+  .months :global(.day.is-booked::after) {
+    background: repeating-linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--stone) 70%, transparent) 0 4px,
+      transparent 4px 8px
+    );
+  }
+  .months :global(.day.is-booked.can-depart) {
+    text-decoration: none;
+    color: var(--ink);
+  }
+  .months :global(.day.in-range) {
+    --fill: var(--clay-tint);
+  }
+  .months :global(.day.is-start),
+  .months :global(.day.is-end) {
+    color: #fff;
+    text-decoration: none;
+  }
+  .months :global(.day.is-start::after),
+  .months :global(.day.is-end::after) {
+    background: linear-gradient(135deg, var(--clay-soft), var(--clay));
+    box-shadow: 0 6px 14px -6px var(--clay);
+    transform: scale(1.04);
+  }
+  .months :global(.day.is-start.has-range::before) {
+    --fill: var(--clay-tint);
+    left: 50%;
+  }
+  .months :global(.day.is-end::before) {
+    --fill: var(--clay-tint);
+    right: 50%;
+  }
+  .months :global(.day.is-preview.is-end::after) {
+    background: color-mix(in srgb, var(--clay) 55%, white);
+  }
+  .months :global(.pad) {
+    aspect-ratio: 1;
+    max-height: 48px;
+  }
+
+  .summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px 20px;
+    flex-wrap: wrap;
+    margin-top: 20px;
+    padding: 14px 18px;
+    border-radius: var(--r-sm);
+    background: var(--sand);
+    font-weight: 600;
+    min-height: 56px;
+  }
+  .summary p {
+    transition: color 0.3s var(--ease);
+  }
+  .summary p.is-error {
+    color: #9b2c1c;
+  }
+  .clear {
+    border: 0;
+    background: none;
+    padding: 4px 0;
+    font: 600 0.9rem var(--font-body);
+    color: var(--clay);
+    cursor: pointer;
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+  .clear:hover {
+    color: var(--clay-hover);
+  }
+
+  .cal-foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px 24px;
+    flex-wrap: wrap;
+    margin-top: 18px;
+  }
+  .legend {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 18px;
+    font-size: 0.84rem;
+    color: var(--ink-soft);
+  }
+  .legend li {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .sw {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+  }
+  .sw--free {
+    box-shadow: inset 0 0 0 1.5px var(--ink-soft);
+  }
+  .sw--booked {
+    background: repeating-linear-gradient(135deg, var(--stone) 0 3px, transparent 3px 6px);
+    box-shadow: inset 0 0 0 1px var(--stone);
+  }
+  .sw--selected {
+    background: linear-gradient(135deg, var(--clay-soft), var(--clay));
+  }
+  .cal-note {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.82rem;
+    color: var(--ink-soft);
+  }
+  .pulse {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #4f9a5b;
+    box-shadow: 0 0 0 0 rgba(79, 154, 91, 0.5);
+    animation: pulse 2.4s infinite;
+  }
+  @keyframes pulse {
+    70% {
+      box-shadow: 0 0 0 8px rgba(79, 154, 91, 0);
+    }
+    100% {
+      box-shadow: 0 0 0 0 rgba(79, 154, 91, 0);
+    }
+  }
+
+  @media (max-width: 960px) {
+    .grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+<script>
+  const DAY = 86_400_000;
+  const toIso = (t: number) => new Date(t).toISOString().slice(0, 10);
+  const fromIso = (s: string) => Date.parse(`${s}T00:00:00Z`);
+  const addDays = (s: string, n: number) => toIso(fromIso(s) + n * DAY);
+  const monthStart = (s: string) => `${s.slice(0, 7)}-01`;
+  const addMonths = (s: string, n: number) => {
+    const d = new Date(fromIso(s));
+    d.setUTCMonth(d.getUTCMonth() + n, 1);
+    return toIso(d.getTime());
+  };
+
+  for (const root of document.querySelectorAll<HTMLElement>('[data-booking]')) {
+    const m = root.dataset;
+    const booked = new Set<string>();
+    for (const r of JSON.parse(m.booked || '[]') as { start: string; end: string }[]) {
+      for (let d = r.start; d < r.end; d = addDays(d, 1)) booked.add(d);
+    }
+
+    const monthsEl = root.querySelector<HTMLElement>('[data-months]')!;
+    const prevBtn = root.querySelector<HTMLButtonElement>('[data-cal-prev]')!;
+    const nextBtn = root.querySelector<HTMLButtonElement>('[data-cal-next]')!;
+    const summary = root.querySelector<HTMLElement>('[data-summary]')!;
+    const clearBtn = root.querySelector<HTMLButtonElement>('[data-clear]')!;
+    const form = root.querySelector<HTMLFormElement>('form')!;
+    const arrivalInput = form.querySelector<HTMLInputElement>('[data-arrival]')!;
+    const departureInput = form.querySelector<HTMLInputElement>('[data-departure]')!;
+
+    const now = new Date();
+    const today = toIso(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate()));
+    const firstMonth = monthStart(today);
+    const lastMonth = addMonths(firstMonth, 17);
+    let view = firstMonth;
+    let arrival = '';
+    let departure = '';
+    let hover = '';
+
+    const locale = m.locale || 'en';
+    const fmtMonth = new Intl.DateTimeFormat(locale, { month: 'long', year: 'numeric', timeZone: 'UTC' });
+    const fmtDay = new Intl.DateTimeFormat(locale, { weekday: 'short', day: 'numeric', month: 'short', timeZone: 'UTC' });
+    const fmtFull = new Intl.DateTimeFormat(locale, { dateStyle: 'full', timeZone: 'UTC' });
+    const fmtDow = new Intl.DateTimeFormat(locale, { weekday: 'short', timeZone: 'UTC' });
+    // 2024-01-01 was a Monday; weeks start on Monday.
+    const weekdays = Array.from({ length: 7 }, (_, i) => fmtDow.format(Date.UTC(2024, 0, 1 + i)).replace('.', ''));
+
+    const freeNight = (d: string) => d >= today && !booked.has(d);
+    const rangeFree = (a: string, b: string) => {
+      for (let d = a; d < b; d = addDays(d, 1)) if (booked.has(d)) return false;
+      return true;
+    };
+    const picking = () => !!arrival && !departure;
+    const canDepart = (d: string) => picking() && d > arrival && rangeFree(arrival, d);
+    const nightsText = (n: number) => (n === 1 ? m.msgNight! : m.msgNights!.replace('{n}', String(n)));
+
+    function render(direction = 0) {
+      monthsEl.textContent = '';
+      for (let i = 0; i < 2; i++) {
+        const start = addMonths(view, i);
+        const month = document.createElement('div');
+        month.className = 'month' + (direction < 0 ? ' from-left' : '');
+        month.style.animationDelay = `${i * 0.06}s`;
+        const title = document.createElement('h4');
+        title.textContent = fmtMonth.format(fromIso(start));
+        const dow = document.createElement('div');
+        dow.className = 'dow';
+        dow.setAttribute('aria-hidden', 'true');
+        for (const w of weekdays) dow.append(Object.assign(document.createElement('span'), { textContent: w }));
+        const days = document.createElement('div');
+        days.className = 'days';
+        const offset = (new Date(fromIso(start)).getUTCDay() + 6) % 7;
+        for (let p = 0; p < offset; p++) days.append(Object.assign(document.createElement('span'), { className: 'pad' }));
+        const end = addMonths(start, 1);
+        for (let d = start; d < end; d = addDays(d, 1)) {
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'day';
+          btn.dataset.date = d;
+          btn.textContent = String(Number(d.slice(8)));
+          days.append(btn);
+        }
+        month.append(title, dow, days);
+        monthsEl.append(month);
+      }
+      prevBtn.disabled = view <= firstMonth;
+      nextBtn.disabled = view >= lastMonth;
+      paint();
+    }
+
+    function paint() {
+      const rangeEnd = departure || (picking() && hover && canDepart(hover) ? hover : '');
+      for (const btn of monthsEl.querySelectorAll<HTMLButtonElement>('.day')) {
+        const d = btn.dataset.date!;
+        const isBooked = booked.has(d);
+        const departable = canDepart(d);
+        const selectable = freeNight(d) || departable;
+        const c = btn.classList;
+        c.toggle('is-today', d === today);
+        c.toggle('is-booked', isBooked && d >= today);
+        c.toggle('can-depart', isBooked && departable);
+        c.toggle('is-start', d === arrival);
+        c.toggle('has-range', d === arrival && !!rangeEnd);
+        c.toggle('is-end', d === rangeEnd);
+        c.toggle('is-preview', d === rangeEnd && !departure);
+        c.toggle('in-range', !!arrival && !!rangeEnd && d > arrival && d < rangeEnd);
+        btn.disabled = !selectable;
+        btn.setAttribute('aria-pressed', String(d === arrival || d === departure));
+        let label = fmtFull.format(fromIso(d));
+        if (isBooked && departable) label += `, ${m.msgDepartureOnly}`;
+        else if (!selectable && d >= today) label += `, ${m.msgUnavailableDay}`;
+        btn.setAttribute('aria-label', label);
+      }
+    }
+
+    function sync() {
+      arrivalInput.value = arrival;
+      departureInput.value = departure;
+      departureInput.min = arrival ? addDays(arrival, 1) : today;
+      validate();
+    }
+
+    function validate() {
+      const clash = (arrival && booked.has(arrival)) || (arrival && departure && !rangeFree(arrival, departure));
+      departureInput.setCustomValidity(clash ? m.msgUnavailable! : '');
+      clearBtn.hidden = !arrival;
+      summary.classList.toggle('is-error', !!clash);
+      if (clash) summary.textContent = m.msgUnavailable!;
+      else if (!arrival) summary.textContent = m.msgArrival!;
+      else if (!departure) summary.textContent = `${fmtDay.format(fromIso(arrival))} → … · ${m.msgDeparture}`;
+      else {
+        const n = Math.round((fromIso(departure) - fromIso(arrival)) / DAY);
+        summary.textContent = `${fmtDay.format(fromIso(arrival))} → ${fmtDay.format(fromIso(departure))} · ${nightsText(n)}`;
+      }
+    }
+
+    function choose(d: string) {
+      if (picking() && d > arrival && rangeFree(arrival, d)) departure = d;
+      else if (freeNight(d)) {
+        arrival = d;
+        departure = '';
+      }
+      hover = '';
+      sync();
+      paint();
+    }
+
+    function show(d: string) {
+      // Bring a date into view if it isn't in either visible month.
+      const target = monthStart(d);
+      if (target < view || target > addMonths(view, 1)) {
+        const dir = target < view ? -1 : 1;
+        view = target > lastMonth ? lastMonth : target < firstMonth ? firstMonth : target;
+        render(dir);
+      }
+    }
+
+    monthsEl.addEventListener('click', (e) => {
+      const btn = (e.target as HTMLElement).closest<HTMLButtonElement>('.day');
+      if (btn && !btn.disabled) choose(btn.dataset.date!);
+    });
+    monthsEl.addEventListener('pointerover', (e) => {
+      const btn = (e.target as HTMLElement).closest<HTMLButtonElement>('.day');
+      const d = btn?.dataset.date ?? '';
+      if (picking() && d !== hover) {
+        hover = d;
+        paint();
+      }
+    });
+    monthsEl.addEventListener('pointerleave', () => {
+      if (hover) {
+        hover = '';
+        paint();
+      }
+    });
+    prevBtn.addEventListener('click', () => {
+      view = addMonths(view, -1);
+      render(-1);
+    });
+    nextBtn.addEventListener('click', () => {
+      view = addMonths(view, 1);
+      render(1);
+    });
+    clearBtn.addEventListener('click', () => {
+      arrival = departure = '';
+      sync();
+      paint();
+    });
+
+    // Typing dates into the form updates the calendar too.
+    const fromInputs = () => {
+      arrival = arrivalInput.value;
+      departure = departureInput.value > arrival ? departureInput.value : '';
+      if (arrival) show(arrival);
+      sync();
+      paint();
+    };
+    arrivalInput.addEventListener('change', fromInputs);
+    departureInput.addEventListener('change', fromInputs);
+    form.addEventListener('booking:sent', () => {
+      arrival = departure = '';
+      sync();
+      paint();
+    });
+
+    render();
+    validate();
+  }
+</script>

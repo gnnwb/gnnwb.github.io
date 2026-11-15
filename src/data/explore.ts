@@ -3,15 +3,17 @@ import type { Locale } from '../i18n';
 // Area guide: used by the interactive location map and the /explore/ page.
 // Coordinates come from OpenStreetMap; distances are approximate, measured from Villa Belle Helene.
 
-export type ExploreSection = 'nearby' | 'beaches' | 'family' | 'dayTrips' | 'travel';
+export type ExploreSection = 'food' | 'drinks' | 'nearby' | 'beaches' | 'family' | 'dayTrips' | 'travel';
 
-export const exploreSections: ExploreSection[] = ['nearby', 'beaches', 'family', 'dayTrips', 'travel'];
+export const exploreSections: ExploreSection[] = ['food', 'drinks', 'nearby', 'beaches', 'family', 'dayTrips', 'travel'];
 
 /** Marker and chip colour for each category. */
 export const sectionColors: Record<ExploreSection, string> = {
+  food: '#b5532f',
+  drinks: '#8b3f63',
   nearby: '#6e7746',
-  beaches: '#2f7d8c',
-  family: '#c0603a',
+  beaches: '#2e7f8f',
+  family: '#d08a26',
   dayTrips: '#7a4e2d',
   travel: '#5f6470',
 };
@@ -21,6 +23,8 @@ export interface PlaceMeta {
   section: ExploreSection;
   lat: number;
   lng: number;
+  /** Google Maps rating when the list was made (restaurants and bars). */
+  rating?: number;
 }
 
 export interface PlaceText {
@@ -30,6 +34,21 @@ export interface PlaceText {
 }
 
 export const places: PlaceMeta[] = [
+  // Food and drink: well-rated places within walking distance, picked from Google Maps (November 2026).
+  { id: 'harakas', section: 'food', lat: 35.30804, lng: 25.37211, rating: 4.9 },
+  { id: 'myrtios', section: 'food', lat: 35.30823, lng: 25.37237, rating: 4.5 },
+  { id: 'taverna1930', section: 'food', lat: 35.30753, lng: 25.37225, rating: 4.8 },
+  { id: 'sofas', section: 'food', lat: 35.30796, lng: 25.37192, rating: 4.6 },
+  { id: 'gevsi', section: 'food', lat: 35.30808, lng: 25.38548, rating: 4.6 },
+  { id: 'atrium', section: 'food', lat: 35.30708, lng: 25.38954, rating: 4.7 },
+  { id: 'mezes', section: 'food', lat: 35.30711, lng: 25.38992, rating: 4.7 },
+  { id: 'meraki', section: 'food', lat: 35.31134, lng: 25.36322, rating: 4.9 },
+  { id: 'antidote', section: 'drinks', lat: 35.3085, lng: 25.38449, rating: 4.8 },
+  { id: 'rahati', section: 'drinks', lat: 35.30668, lng: 25.39083, rating: 4.7 },
+  { id: 'trap', section: 'drinks', lat: 35.30633, lng: 25.39252, rating: 4.8 },
+  { id: 'woodstone', section: 'drinks', lat: 35.30667, lng: 25.39299, rating: 4.8 },
+  { id: 'savoidakis', section: 'drinks', lat: 35.31744, lng: 25.3904, rating: 4.5 },
+  { id: 'pablo', section: 'drinks', lat: 35.31727, lng: 25.39265, rating: 4.9 },
   { id: 'square', section: 'nearby', lat: 35.30817, lng: 25.37202 },
   { id: 'koutouloufari', section: 'nearby', lat: 35.3072, lng: 25.3883 },
   { id: 'harbour', section: 'nearby', lat: 35.3195, lng: 25.39 },
@@ -54,6 +73,20 @@ export const places: PlaceMeta[] = [
 type Texts = Record<string, PlaceText>;
 
 const en: Texts = {
+  harakas: { title: 'Taverna Harakas', distance: '10 min walk', text: 'Cretan cooking right on the village square, and one of the best-rated tavernas in the area. Worth booking ahead in high season.' },
+  myrtios: { title: 'Myrtios Traditional Taverna', distance: '10 min walk', text: 'A traditional taverna on the square, with home-style Cretan dishes and tables out under the trees.' },
+  taverna1930: { title: 'Taverna 1930', distance: '10 min walk', text: 'A taverna in the stone lanes just below the square, rated among the best in the old village.' },
+  sofas: { title: 'Sofas Taverna', distance: '10 min walk', text: '“Greek creative cuisine”: Cretan classics with a modern touch, in the heart of the old village.' },
+  gevsi: { title: 'Gevsi Traditional Taverna', distance: '8 min walk', text: 'The closest of the Piskopiano tavernas, an easy stroll from the villa for a relaxed Cretan dinner.' },
+  atrium: { title: 'Atrium Restaurant', distance: '15 min walk', text: 'A popular restaurant in Koutouloufari for grilled meat and fish.' },
+  mezes: { title: 'Mezes by Alex and Christine', distance: '15 min walk', text: 'Small Greek plates to share in Koutouloufari: order a few mezes and a carafe of local wine.' },
+  meraki: { title: 'Taverna Me…Raki', distance: '5 min drive', text: 'A traditional taverna just west of the village, among the highest-rated in the whole Hersonissos area.' },
+  antidote: { title: 'Antidote', distance: '8 min walk', text: 'A friendly bar and grill in Piskopiano for a cold beer or a cocktail: the nearest evening out from the villa.' },
+  rahati: { title: 'Rahati café and patisserie', distance: '15 min walk', text: 'Coffee, breakfast and pastries in Koutouloufari, for a slow start to the day.' },
+  trap: { title: 'The Trap', distance: '15 min walk', text: 'A cocktail bar in Koutouloufari, ideal for a drink after dinner in the village.' },
+  woodstone: { title: 'Woodstone gastropub', distance: '15 min walk', text: 'Cocktails, beers and bar bites in the lanes of Koutouloufari.' },
+  savoidakis: { title: 'Savoidakis bakery', distance: '2.5 km', text: 'A pastry shop and café near the harbour, for sweets, pastries and coffee by the sea.' },
+  pablo: { title: 'Pablo Premium Bar', distance: '2.5 km', text: 'A stylish cocktail bar near Hersonissos harbour, for a livelier night by the sea.' },
   square: { title: 'The village square', distance: '10 min walk', text: 'The heart of Old Hersonissos: a little square under old trees, ringed with tavernas, cafés and small shops. Lively on summer evenings, never loud. Perfect for an evening stroll and dinner under the stars.' },
   koutouloufari: { title: 'Koutouloufari and Piskopiano', distance: '15 min walk', text: 'Two neighbouring hill villages with stone lanes, bougainvillea and some of the best-loved tavernas in the area, many with terraces looking out to sea.' },
   harbour: { title: 'Hersonissos harbour', distance: '2.5 km', text: 'A seafront promenade lined with fish tavernas, bakeries and bars, ending at the little chapel of Agia Paraskevi on the rocks above the water. Beautiful at sunset.' },
@@ -76,6 +109,20 @@ const en: Texts = {
 };
 
 const el: Texts = {
+  harakas: { title: 'Ταβέρνα Χάρακας', distance: '10 λεπτά με τα πόδια', text: 'Κρητική κουζίνα πάνω στην πλατεία του χωριού, από τις ταβέρνες με τις καλύτερες κριτικές στην περιοχή. Καλό είναι να κλείσετε τραπέζι το καλοκαίρι.' },
+  myrtios: { title: 'Παραδοσιακή ταβέρνα Μύρτιος', distance: '10 λεπτά με τα πόδια', text: 'Παραδοσιακή ταβέρνα στην πλατεία, με σπιτικά κρητικά πιάτα και τραπέζια κάτω από τα δέντρα.' },
+  taverna1930: { title: 'Ταβέρνα 1930', distance: '10 λεπτά με τα πόδια', text: 'Ταβέρνα στα πέτρινα σοκάκια λίγο κάτω από την πλατεία, από τις πιο αγαπημένες του παλιού χωριού.' },
+  sofas: { title: 'Ταβέρνα Σοφάς', distance: '10 λεπτά με τα πόδια', text: '«Ελληνική δημιουργική κουζίνα»: κρητικά κλασικά πιάτα με μοντέρνα πινελιά, στην καρδιά του παλιού χωριού.' },
+  gevsi: { title: 'Παραδοσιακή ταβέρνα Γεύση', distance: '8 λεπτά με τα πόδια', text: 'Η πιο κοντινή ταβέρνα του Πισκοπιανού, μια σύντομη βόλτα από τη βίλα για ένα χαλαρό κρητικό δείπνο.' },
+  atrium: { title: 'Εστιατόριο Atrium', distance: '15 λεπτά με τα πόδια', text: 'Αγαπημένο εστιατόριο στο Κουτουλουφάρι για ψητά κρέατα και ψάρια.' },
+  mezes: { title: 'Mezes by Alex and Christine', distance: '15 λεπτά με τα πόδια', text: 'Μεζέδες για μοίρασμα στο Κουτουλουφάρι: παραγγείλτε μερικά πιάτα και ένα καραφάκι ντόπιο κρασί.' },
+  meraki: { title: 'Ταβέρνα Με…Ρακί', distance: '5 λεπτά με το αυτοκίνητο', text: 'Παραδοσιακή ταβέρνα λίγο δυτικά του χωριού, από τις καλύτερες σε κριτικές σε όλη τη Χερσόνησο.' },
+  antidote: { title: 'Antidote', distance: '8 λεπτά με τα πόδια', text: 'Φιλικό bar & grill στο Πισκοπιανό για μια κρύα μπίρα ή ένα κοκτέιλ: η πιο κοντινή βραδινή έξοδος από τη βίλα.' },
+  rahati: { title: 'Rahati καφέ-ζαχαροπλαστείο', distance: '15 λεπτά με τα πόδια', text: 'Καφές, πρωινό και γλυκά στο Κουτουλουφάρι, για ένα αργό ξεκίνημα της μέρας.' },
+  trap: { title: 'The Trap', distance: '15 λεπτά με τα πόδια', text: 'Cocktail bar στο Κουτουλουφάρι, ιδανικό για ένα ποτό μετά το φαγητό στο χωριό.' },
+  woodstone: { title: 'Woodstone gastropub', distance: '15 λεπτά με τα πόδια', text: 'Κοκτέιλ, μπίρες και μεζεδάκια στα σοκάκια του Κουτουλουφαριού.' },
+  savoidakis: { title: 'Ζαχαροπλαστείο Σαβοϊδάκης', distance: '2,5 χλμ.', text: 'Ζαχαροπλαστείο και καφέ κοντά στο λιμάνι, για γλυκά και καφέ δίπλα στη θάλασσα.' },
+  pablo: { title: 'Pablo Premium Bar', distance: '2,5 χλμ.', text: 'Κομψό cocktail bar κοντά στο λιμάνι της Χερσονήσου, για πιο ζωντανή βραδιά δίπλα στη θάλασσα.' },
   square: { title: 'Η πλατεία του χωριού', distance: '10 λεπτά με τα πόδια', text: 'Η καρδιά της Παλιάς Χερσονήσου: μια μικρή πλατεία κάτω από αιωνόβια δέντρα, με ταβέρνες, καφέ και μαγαζάκια γύρω-γύρω. Ζωντανή τα καλοκαιρινά βράδια, ποτέ θορυβώδης. Ιδανική για βραδινή βόλτα και φαγητό κάτω από τα αστέρια.' },
   koutouloufari: { title: 'Κουτουλουφάρι και Πισκοπιανό', distance: '15 λεπτά με τα πόδια', text: 'Δύο γειτονικά ορεινά χωριά με πέτρινα σοκάκια, βουκαμβίλιες και μερικές από τις πιο αγαπημένες ταβέρνες της περιοχής, πολλές με βεράντα και θέα στη θάλασσα.' },
   harbour: { title: 'Λιμάνι Χερσονήσου', distance: '2,5 km', text: 'Παραλιακός πεζόδρομος με ψαροταβέρνες, φούρνους και μπαρ, που καταλήγει στο εκκλησάκι της Αγίας Παρασκευής πάνω στα βράχια. Πανέμορφο στο ηλιοβασίλεμα.' },
@@ -98,6 +145,20 @@ const el: Texts = {
 };
 
 const de: Texts = {
+  harakas: { title: 'Taverna Harakas', distance: '10 Min. zu Fuß', text: 'Kretische Küche direkt am Dorfplatz und eine der am besten bewerteten Tavernen der Gegend. In der Hochsaison lohnt es sich zu reservieren.' },
+  myrtios: { title: 'Traditionelle Taverne Myrtios', distance: '10 Min. zu Fuß', text: 'Eine traditionelle Taverne am Platz mit hausgemachter kretischer Küche und Tischen unter den Bäumen.' },
+  taverna1930: { title: 'Taverna 1930', distance: '10 Min. zu Fuß', text: 'Eine Taverne in den Steingassen gleich unterhalb des Platzes, eine der beliebtesten im alten Dorf.' },
+  sofas: { title: 'Sofas Taverna', distance: '10 Min. zu Fuß', text: '„Kreative griechische Küche“: kretische Klassiker mit moderner Note, mitten im alten Dorf.' },
+  gevsi: { title: 'Traditionelle Taverne Gevsi', distance: '8 Min. zu Fuß', text: 'Die nächstgelegene Taverne in Piskopiano, ein kurzer Spaziergang von der Villa für ein entspanntes kretisches Abendessen.' },
+  atrium: { title: 'Restaurant Atrium', distance: '15 Min. zu Fuß', text: 'Ein beliebtes Restaurant in Koutouloufari für gegrilltes Fleisch und Fisch.' },
+  mezes: { title: 'Mezes by Alex and Christine', distance: '15 Min. zu Fuß', text: 'Kleine griechische Gerichte zum Teilen in Koutouloufari: ein paar Mezedes und eine Karaffe Landwein bestellen.' },
+  meraki: { title: 'Taverna Me…Raki', distance: '5 Min. mit dem Auto', text: 'Eine traditionelle Taverne westlich des Dorfes, eine der bestbewerteten in der ganzen Gegend von Hersonissos.' },
+  antidote: { title: 'Antidote', distance: '8 Min. zu Fuß', text: 'Eine freundliche Bar mit Grill in Piskopiano für ein kühles Bier oder einen Cocktail: der nächste Abendtreff von der Villa aus.' },
+  rahati: { title: 'Rahati Café und Konditorei', distance: '15 Min. zu Fuß', text: 'Kaffee, Frühstück und Gebäck in Koutouloufari, für einen gemütlichen Start in den Tag.' },
+  trap: { title: 'The Trap', distance: '15 Min. zu Fuß', text: 'Eine Cocktailbar in Koutouloufari, ideal für einen Drink nach dem Abendessen im Dorf.' },
+  woodstone: { title: 'Woodstone Gastropub', distance: '15 Min. zu Fuß', text: 'Cocktails, Bier und kleine Snacks in den Gassen von Koutouloufari.' },
+  savoidakis: { title: 'Bäckerei Savoidakis', distance: '2,5 km', text: 'Konditorei und Café nahe dem Hafen, für Süßes, Gebäck und Kaffee am Meer.' },
+  pablo: { title: 'Pablo Premium Bar', distance: '2,5 km', text: 'Eine stilvolle Cocktailbar nahe dem Hafen von Hersonissos, für einen lebhafteren Abend am Meer.' },
   square: { title: 'Der Dorfplatz', distance: '10 Min. zu Fuß', text: 'Das Herz von Alt-Hersonissos: ein kleiner Platz unter alten Bäumen, umgeben von Tavernen, Cafés und kleinen Läden. An Sommerabenden lebhaft, aber nie laut – ideal für einen Abendspaziergang und ein Essen unter Sternen.' },
   koutouloufari: { title: 'Koutouloufari und Piskopiano', distance: '15 Min. zu Fuß', text: 'Zwei benachbarte Bergdörfer mit Steingassen, Bougainvillea und einigen der beliebtesten Tavernen der Gegend, viele mit Terrasse und Meerblick.' },
   harbour: { title: 'Hafen von Hersonissos', distance: '2,5 km', text: 'Eine Uferpromenade mit Fischtavernen, Bäckereien und Bars, die an der kleinen Kapelle Agia Paraskevi auf den Felsen endet. Wunderschön bei Sonnenuntergang.' },
@@ -120,6 +181,20 @@ const de: Texts = {
 };
 
 const fr: Texts = {
+  harakas: { title: 'Taverna Harakas', distance: '10 min à pied', text: 'Cuisine crétoise sur la place du village, et l’une des tavernes les mieux notées du coin. Mieux vaut réserver en haute saison.' },
+  myrtios: { title: 'Taverne traditionnelle Myrtios', distance: '10 min à pied', text: 'Une taverne traditionnelle sur la place, avec une cuisine crétoise maison et des tables sous les arbres.' },
+  taverna1930: { title: 'Taverna 1930', distance: '10 min à pied', text: 'Une taverne dans les ruelles de pierre juste sous la place, parmi les plus appréciées du vieux village.' },
+  sofas: { title: 'Sofas Taverna', distance: '10 min à pied', text: '« Cuisine grecque créative » : des classiques crétois revisités, au cœur du vieux village.' },
+  gevsi: { title: 'Taverne traditionnelle Gevsi', distance: '8 min à pied', text: 'La plus proche des tavernes de Piskopiano, à deux pas de la villa pour un dîner crétois sans façon.' },
+  atrium: { title: 'Restaurant Atrium', distance: '15 min à pied', text: 'Un restaurant prisé de Koutouloufari pour ses viandes et poissons grillés.' },
+  mezes: { title: 'Mezes by Alex and Christine', distance: '15 min à pied', text: 'Des petites assiettes grecques à partager à Koutouloufari : quelques mezzés et une carafe de vin local.' },
+  meraki: { title: 'Taverna Me…Raki', distance: '5 min en voiture', text: 'Une taverne traditionnelle juste à l’ouest du village, parmi les mieux notées de toute la région d’Hersonissos.' },
+  antidote: { title: 'Antidote', distance: '8 min à pied', text: 'Un bar-grill convivial à Piskopiano pour une bière fraîche ou un cocktail : la sortie la plus proche de la villa.' },
+  rahati: { title: 'Rahati café-pâtisserie', distance: '15 min à pied', text: 'Café, petit-déjeuner et pâtisseries à Koutouloufari, pour bien commencer la journée.' },
+  trap: { title: 'The Trap', distance: '15 min à pied', text: 'Un bar à cocktails à Koutouloufari, idéal pour un verre après le dîner au village.' },
+  woodstone: { title: 'Woodstone gastropub', distance: '15 min à pied', text: 'Cocktails, bières et petites assiettes dans les ruelles de Koutouloufari.' },
+  savoidakis: { title: 'Pâtisserie Savoidakis', distance: '2,5 km', text: 'Pâtisserie et café près du port, pour des douceurs et un café face à la mer.' },
+  pablo: { title: 'Pablo Premium Bar', distance: '2,5 km', text: 'Un bar à cocktails élégant près du port d’Hersonissos, pour une soirée plus animée au bord de la mer.' },
   square: { title: 'La place du village', distance: '10 min à pied', text: 'Le cœur d’Old Hersonissos : une petite place à l’ombre de vieux arbres, entourée de tavernes, de cafés et de boutiques. Animée les soirs d’été, jamais bruyante – parfaite pour une promenade et un dîner sous les étoiles.' },
   koutouloufari: { title: 'Koutouloufari et Piskopiano', distance: '15 min à pied', text: 'Deux villages perchés voisins, avec leurs ruelles de pierre, leurs bougainvilliers et quelques-unes des tavernes les plus appréciées du coin, souvent avec terrasse face à la mer.' },
   harbour: { title: 'Le port d’Hersonissos', distance: '2,5 km', text: 'Une promenade en bord de mer bordée de tavernes de poisson, de boulangeries et de bars, jusqu’à la petite chapelle d’Agia Paraskevi sur les rochers. Superbe au coucher du soleil.' },
@@ -142,6 +217,20 @@ const fr: Texts = {
 };
 
 const it: Texts = {
+  harakas: { title: 'Taverna Harakas', distance: '10 min a piedi', text: 'Cucina cretese proprio sulla piazza del paese, e una delle taverne più apprezzate della zona. In alta stagione conviene prenotare.' },
+  myrtios: { title: 'Taverna tradizionale Myrtios', distance: '10 min a piedi', text: 'Una taverna tradizionale sulla piazza, con piatti cretesi casalinghi e tavoli all’ombra degli alberi.' },
+  taverna1930: { title: 'Taverna 1930', distance: '10 min a piedi', text: 'Una taverna nei vicoli di pietra appena sotto la piazza, tra le più amate del paese vecchio.' },
+  sofas: { title: 'Sofas Taverna', distance: '10 min a piedi', text: '«Cucina greca creativa»: classici cretesi con un tocco moderno, nel cuore del paese vecchio.' },
+  gevsi: { title: 'Taverna tradizionale Gevsi', distance: '8 min a piedi', text: 'La più vicina delle taverne di Piskopiano, a una breve passeggiata dalla villa per una cena cretese rilassata.' },
+  atrium: { title: 'Ristorante Atrium', distance: '15 min a piedi', text: 'Un ristorante molto frequentato a Koutouloufari per carne e pesce alla griglia.' },
+  mezes: { title: 'Mezes by Alex and Christine', distance: '15 min a piedi', text: 'Piccoli piatti greci da condividere a Koutouloufari: qualche mezé e una caraffa di vino locale.' },
+  meraki: { title: 'Taverna Me…Raki', distance: '5 min in auto', text: 'Una taverna tradizionale appena a ovest del paese, tra le più apprezzate di tutta la zona di Hersonissos.' },
+  antidote: { title: 'Antidote', distance: '8 min a piedi', text: 'Un bar con griglia accogliente a Piskopiano per una birra fresca o un cocktail: la serata fuori più vicina alla villa.' },
+  rahati: { title: 'Rahati caffè e pasticceria', distance: '15 min a piedi', text: 'Caffè, colazione e dolci a Koutouloufari, per iniziare la giornata con calma.' },
+  trap: { title: 'The Trap', distance: '15 min a piedi', text: 'Un cocktail bar a Koutouloufari, ideale per un drink dopo cena in paese.' },
+  woodstone: { title: 'Woodstone gastropub', distance: '15 min a piedi', text: 'Cocktail, birre e stuzzichini nei vicoli di Koutouloufari.' },
+  savoidakis: { title: 'Pasticceria Savoidakis', distance: '2,5 km', text: 'Pasticceria e caffè vicino al porto, per dolci e un caffè in riva al mare.' },
+  pablo: { title: 'Pablo Premium Bar', distance: '2,5 km', text: 'Un elegante cocktail bar vicino al porto di Hersonissos, per una serata più vivace sul mare.' },
   square: { title: 'La piazza del paese', distance: '10 min a piedi', text: 'Il cuore di Old Hersonissos: una piccola piazza all’ombra di vecchi alberi, circondata da taverne, caffè e negozietti. Vivace nelle sere d’estate, mai rumorosa – perfetta per una passeggiata e una cena sotto le stelle.' },
   koutouloufari: { title: 'Koutouloufari e Piskopiano', distance: '15 min a piedi', text: 'Due paesi collinari vicini, con vicoli in pietra, buganvillee e alcune delle taverne più amate della zona, molte con terrazza sul mare.' },
   harbour: { title: 'Il porto di Hersonissos', distance: '2,5 km', text: 'Un lungomare con taverne di pesce, forni e bar che termina alla piccola cappella di Agia Paraskevi sugli scogli. Splendido al tramonto.' },

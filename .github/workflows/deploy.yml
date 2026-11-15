@@ -4,6 +4,9 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
+  # Rebuild every 3 hours so the availability calendar follows Airbnb.
+  schedule:
+    - cron: '17 */3 * * *'
 
 permissions:
   contents: read
@@ -25,6 +28,9 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run build
+        env:
+          # Private Airbnb iCal export link (repository secret). Without it the calendar shows every date as open.
+          AIRBNB_ICAL_BELLE_HELENE: ${{ secrets.AIRBNB_ICAL_BELLE_HELENE }}
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist

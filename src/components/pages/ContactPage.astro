@@ -4,9 +4,9 @@ import Base from '../../layouts/Base.astro';
 import Icon from '../Icon.astro';
 import ContactForm from '../ContactForm.astro';
 import LocationExplorer from '../LocationExplorer.astro';
-import { t, type Locale } from '../../i18n';
+import { localizePath, t, type Locale } from '../../i18n';
 import { site } from '../../data/site';
-import { villas } from '../../data/villas';
+import { villas, villaPath } from '../../data/villas';
 
 interface Props {
   locale: Locale;
@@ -17,7 +17,7 @@ const s = t(locale);
 const c = s.contact;
 const main = villas[0];
 const heroImg = main.gallery.find((p) => p.category === 'terrace')?.src ?? main.hero;
-const directions = `https://www.google.com/maps/dir/?api=1&destination=${main.coords.lat},${main.coords.lng}`;
+const directions = main.mapsUrl;
 
 const tiles = [
   { icon: 'phone', label: c.phoneLabel, value: site.phone, href: site.phoneHref, action: c.callAction, external: false },
@@ -77,7 +77,7 @@ const tiles = [
         </p>
         <div class="airbnb">
           <p>{c.bookDirect}</p>
-          <a class="link-arrow" href={main.airbnbUrl} target="_blank" rel="noopener">
+          <a class="link-arrow" href={`${localizePath(locale, villaPath(main.slug))}#book`}>
             {s.cta.airbnb}
             <Icon name="arrow" size={18} />
           </a>
@@ -151,14 +151,14 @@ const tiles = [
     padding: 28px;
     background: var(--sand-light);
     border-radius: var(--r-md);
-    box-shadow: 0 24px 50px -30px rgba(43, 36, 28, 0.45);
+    box-shadow: 0 24px 50px -30px rgba(51, 41, 31, 0.45);
     transition:
       transform 0.35s var(--ease),
       box-shadow 0.35s var(--ease);
   }
   .tile:hover {
     transform: translateY(-4px);
-    box-shadow: 0 30px 60px -30px rgba(43, 36, 28, 0.55);
+    box-shadow: 0 30px 60px -30px rgba(51, 41, 31, 0.55);
   }
   .tile-icon {
     display: grid;
@@ -230,7 +230,7 @@ const tiles = [
     width: 100%;
     margin-top: 12px;
     padding-top: 24px;
-    border-top: 1px solid rgba(59, 47, 34, 0.14);
+    border-top: 1px solid rgba(51, 41, 31, 0.14);
     color: var(--ink-soft);
   }
   .airbnb .link-arrow {
