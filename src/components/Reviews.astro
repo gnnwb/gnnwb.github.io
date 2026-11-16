@@ -320,7 +320,8 @@ const tones = ['clay', 'olive', 'sea', 'gold'];
     margin-top: clamp(36px, 5vw, 56px);
   }
   .track {
-    --pad: max(var(--gutter), calc((100vw - var(--wrap)) / 2 + var(--gutter)));
+    /* % of the section, not 100vw: 100vw includes the scrollbar and pushed the cards right. */
+    --pad: max(var(--gutter), calc((100% - var(--wrap)) / 2 + var(--gutter)));
     list-style: none;
     margin: 0;
     display: flex;

@@ -47,6 +47,21 @@
   color-scheme: light;
 }
 
+/* Use more of large screens instead of leaving a narrow column with wide empty margins. */
+@media (min-width: 1680px) {
+  :root {
+    --wrap: 1400px;
+  }
+}
+@media (min-width: 2200px) {
+  :root {
+    --wrap: 1560px;
+  }
+  html {
+    font-size: 106.25%;
+  }
+}
+
 *,
 *::before,
 *::after {

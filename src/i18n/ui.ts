@@ -219,12 +219,16 @@ const en = {
   },
   privacy: {
     title: 'Privacy policy',
-    body: [
-      'This website is run by Belle Helene Villas, Old Hersonissos, Crete. We respect your privacy and collect as little data as possible.',
-      'We do not use analytics or advertising cookies. The site itself sets no cookies.',
-      'If you use the contact form, your name, email and message are delivered to us by Web3Forms so we can reply. We use them only to answer your enquiry and do not share them.',
-      'Map tiles are loaded from OpenStreetMap; this sends your IP address to their servers but sets no cookies. Direction links open Google Maps and booking links open Airbnb, each with its own privacy policy.',
-      'To ask about or delete any data we hold about you, email us at info@villabellehelene.gr.',
+    updated: 'Last updated: November 2026',
+    lead: 'This website is run by Belle Helene Villas, Old Hersonissos, Crete. We collect as little data as possible and only use it to look after your enquiry or stay.',
+    sections: [
+      { title: 'No tracking', text: 'We do not use analytics, advertising or tracking of any kind, and the site itself sets no cookies. Fonts are served from our own site, not from Google.' },
+      { title: 'Contact and booking requests', text: 'When you send the contact form or a booking request, we receive your name, email, the dates and number of guests you choose, your phone number if you give it, and your message. They are delivered to our inbox by the Web3Forms service (or, if you choose, through your own email app). We use them only to reply and to arrange your stay, never for marketing, and we do not share them with anyone else. We keep booking correspondence only as long as we need it for your stay and for our legal and tax obligations.' },
+      { title: 'Availability calendar', text: 'The calendar shows which nights are already booked, read from our Airbnb calendar when the website is updated. It contains dates only, never guest names or other details, and your browser does not contact Airbnb when you look at it.' },
+      { title: 'Guest reviews', text: 'The reviews on this site are public reviews left on our Airbnb listing, shown with the guest’s first name and month of stay only.' },
+      { title: 'Maps and links', text: 'Map tiles are loaded from OpenStreetMap, which receives your IP address but sets no cookies. Walking and driving routes are prepared in advance, so choosing a place sends nothing to a third party. Direction links open Google Maps and booking links open Airbnb, each under its own privacy policy.' },
+      { title: 'Hosting', text: 'The site is hosted on GitHub Pages. Like any web server, GitHub may log your IP address for security purposes.' },
+      { title: 'Your rights', text: 'You can ask to see, correct or delete any data we hold about you at any time. Email us at info@villabellehelene.gr.' },
     ],
   },
 };
@@ -450,12 +454,16 @@ const el: UIStrings = {
   },
   privacy: {
     title: 'Πολιτική απορρήτου',
-    body: [
-      'Ο ιστότοπος ανήκει στις Belle Helene Villas, Παλιά Χερσόνησος, Κρήτη. Σεβόμαστε το απόρρητό σας και συλλέγουμε όσο το δυνατόν λιγότερα δεδομένα.',
-      'Δεν χρησιμοποιούμε cookies στατιστικών ή διαφήμισης. Ο ίδιος ο ιστότοπος δεν αποθηκεύει cookies.',
-      'Αν χρησιμοποιήσετε τη φόρμα επικοινωνίας, το όνομα, το email και το μήνυμά σας μας παραδίδονται μέσω της υπηρεσίας Web3Forms ώστε να σας απαντήσουμε. Τα χρησιμοποιούμε μόνο για το αίτημά σας και δεν τα μοιραζόμαστε.',
-      'Ο χάρτης φορτώνεται από το OpenStreetMap· έτσι η διεύθυνση IP σας στέλνεται στους διακομιστές του, χωρίς όμως cookies. Οι σύνδεσμοι οδηγιών ανοίγουν το Google Maps και οι σύνδεσμοι κράτησης το Airbnb, που έχουν τη δική τους πολιτική απορρήτου.',
-      'Για οποιαδήποτε ερώτηση ή διαγραφή δεδομένων σας, στείλτε μας email στο info@villabellehelene.gr.',
+    updated: 'Τελευταία ενημέρωση: Νοέμβριος 2026',
+    lead: 'Τον ιστότοπο διαχειρίζεται η Belle Helene Villas, Παλιά Χερσόνησος, Κρήτη. Συλλέγουμε όσο το δυνατόν λιγότερα δεδομένα και τα χρησιμοποιούμε μόνο για το αίτημα ή τη διαμονή σας.',
+    sections: [
+      { title: 'Καμία παρακολούθηση', text: 'Δεν χρησιμοποιούμε εργαλεία στατιστικών, διαφήμισης ή παρακολούθησης, και ο ιστότοπος δεν αποθηκεύει cookies. Οι γραμματοσειρές φορτώνονται από τον δικό μας ιστότοπο, όχι από την Google.' },
+      { title: 'Φόρμα επικοινωνίας και αιτήματα κράτησης', text: 'Όταν στέλνετε τη φόρμα επικοινωνίας ή ένα αίτημα κράτησης, λαμβάνουμε το όνομά σας, το email σας, τις ημερομηνίες και τον αριθμό ατόμων που επιλέγετε, το τηλέφωνό σας αν το δώσετε και το μήνυμά σας. Φτάνουν στο email μας μέσω της υπηρεσίας Web3Forms (ή, αν το προτιμήσετε, μέσω του δικού σας προγράμματος email). Τα χρησιμοποιούμε μόνο για να σας απαντήσουμε και να οργανώσουμε τη διαμονή σας, ποτέ για διαφήμιση, και δεν τα μοιραζόμαστε με κανέναν. Κρατάμε την αλληλογραφία κρατήσεων μόνο όσο χρειάζεται για τη διαμονή σας και για τις νομικές και φορολογικές μας υποχρεώσεις.' },
+      { title: 'Ημερολόγιο διαθεσιμότητας', text: 'Το ημερολόγιο δείχνει ποιες νύχτες είναι ήδη κρατημένες, όπως προκύπτουν από το ημερολόγιό μας στο Airbnb κατά την ενημέρωση του ιστότοπου. Περιέχει μόνο ημερομηνίες, ποτέ ονόματα ή στοιχεία επισκεπτών, και ο browser σας δεν επικοινωνεί με το Airbnb όταν το βλέπετε.' },
+      { title: 'Κριτικές επισκεπτών', text: 'Οι κριτικές του ιστότοπου είναι δημόσιες κριτικές από τη σελίδα μας στο Airbnb και εμφανίζονται μόνο με το μικρό όνομα του επισκέπτη και τον μήνα διαμονής.' },
+      { title: 'Χάρτες και σύνδεσμοι', text: 'Τα πλακίδια του χάρτη φορτώνονται από το OpenStreetMap, που λαμβάνει τη διεύθυνση IP σας αλλά δεν αποθηκεύει cookies. Οι διαδρομές με τα πόδια και με αυτοκίνητο είναι έτοιμες από πριν, οπότε η επιλογή ενός μέρους δεν στέλνει τίποτα σε τρίτους. Οι σύνδεσμοι οδηγιών ανοίγουν το Google Maps και οι σύνδεσμοι κράτησης το Airbnb, το καθένα με τη δική του πολιτική απορρήτου.' },
+      { title: 'Φιλοξενία', text: 'Ο ιστότοπος φιλοξενείται στο GitHub Pages. Όπως κάθε διακομιστής, το GitHub μπορεί να καταγράφει τη διεύθυνση IP σας για λόγους ασφαλείας.' },
+      { title: 'Τα δικαιώματά σας', text: 'Μπορείτε οποτεδήποτε να ζητήσετε να δείτε, να διορθώσετε ή να διαγράψετε δεδομένα που έχουμε για εσάς. Γράψτε μας στο info@villabellehelene.gr.' },
     ],
   },
 };
@@ -679,12 +687,16 @@ const de: UIStrings = {
   },
   privacy: {
     title: 'Datenschutzerklärung',
-    body: [
-      'Diese Website wird von Belle Helene Villas, Alt-Hersonissos, Kreta, betrieben. Wir respektieren Ihre Privatsphäre und erheben so wenige Daten wie möglich.',
-      'Wir verwenden keine Analyse- oder Werbe-Cookies. Die Website selbst setzt keine Cookies.',
-      'Wenn Sie das Kontaktformular nutzen, werden Name, E-Mail und Nachricht über den Dienst Web3Forms an uns übermittelt, damit wir antworten können. Wir nutzen diese Daten nur zur Beantwortung Ihrer Anfrage und geben sie nicht weiter.',
-      'Kartenkacheln werden von OpenStreetMap geladen; dabei wird Ihre IP-Adresse an deren Server übertragen, Cookies werden nicht gesetzt. Routenlinks öffnen Google Maps, Buchungslinks Airbnb, jeweils mit eigener Datenschutzerklärung.',
-      'Für Auskunft oder Löschung Ihrer Daten schreiben Sie uns an info@villabellehelene.gr.',
+    updated: 'Stand: November 2026',
+    lead: 'Diese Website wird von Belle Helene Villas, Old Hersonissos, Kreta, betrieben. Wir erheben so wenige Daten wie möglich und nutzen sie nur für Ihre Anfrage oder Ihren Aufenthalt.',
+    sections: [
+      { title: 'Kein Tracking', text: 'Wir verwenden keine Analyse-, Werbe- oder Tracking-Dienste, und die Website setzt keine Cookies. Schriftarten werden von unserer eigenen Website geladen, nicht von Google.' },
+      { title: 'Kontakt- und Buchungsanfragen', text: 'Wenn Sie das Kontaktformular oder eine Buchungsanfrage senden, erhalten wir Ihren Namen, Ihre E-Mail-Adresse, die gewählten Daten und die Anzahl der Gäste, Ihre Telefonnummer, falls angegeben, und Ihre Nachricht. Sie werden über den Dienst Web3Forms an unser Postfach zugestellt (oder, wenn Sie möchten, über Ihr eigenes E-Mail-Programm). Wir nutzen sie nur, um zu antworten und Ihren Aufenthalt zu organisieren, nie für Werbung, und geben sie nicht weiter. Buchungskorrespondenz bewahren wir nur so lange auf, wie es für Ihren Aufenthalt und unsere gesetzlichen und steuerlichen Pflichten nötig ist.' },
+      { title: 'Verfügbarkeitskalender', text: 'Der Kalender zeigt, welche Nächte bereits belegt sind, übernommen aus unserem Airbnb-Kalender, wenn die Website aktualisiert wird. Er enthält nur Daten, nie Namen oder andere Angaben von Gästen, und Ihr Browser verbindet sich beim Ansehen nicht mit Airbnb.' },
+      { title: 'Gästebewertungen', text: 'Die Bewertungen auf dieser Website sind öffentliche Bewertungen unseres Airbnb-Inserats und werden nur mit dem Vornamen des Gastes und dem Monat des Aufenthalts gezeigt.' },
+      { title: 'Karten und Links', text: 'Kartenkacheln werden von OpenStreetMap geladen; dabei wird Ihre IP-Adresse übermittelt, Cookies werden nicht gesetzt. Fuß- und Autorouten sind vorab berechnet, sodass bei der Auswahl eines Ortes nichts an Dritte gesendet wird. Wegbeschreibungen öffnen Google Maps und Buchungslinks Airbnb, jeweils mit eigener Datenschutzerklärung.' },
+      { title: 'Hosting', text: 'Die Website wird bei GitHub Pages gehostet. Wie jeder Webserver kann GitHub Ihre IP-Adresse aus Sicherheitsgründen protokollieren.' },
+      { title: 'Ihre Rechte', text: 'Sie können jederzeit Auskunft, Berichtigung oder Löschung Ihrer bei uns gespeicherten Daten verlangen. Schreiben Sie uns an info@villabellehelene.gr.' },
     ],
   },
 };
@@ -908,12 +920,16 @@ const fr: UIStrings = {
   },
   privacy: {
     title: 'Politique de confidentialité',
-    body: [
-      'Ce site est exploité par Belle Helene Villas, Old Hersonissos, Crète. Nous respectons votre vie privée et collectons le moins de données possible.',
-      'Nous n’utilisons aucun cookie de mesure d’audience ou de publicité. Le site lui-même ne dépose aucun cookie.',
-      'Si vous utilisez le formulaire de contact, votre nom, votre e-mail et votre message nous sont transmis par le service Web3Forms afin que nous puissions vous répondre. Ils servent uniquement à traiter votre demande et ne sont pas partagés.',
-      'Les fonds de carte sont chargés depuis OpenStreetMap ; votre adresse IP est alors transmise à leurs serveurs, sans dépôt de cookie. Les liens d’itinéraire ouvrent Google Maps et les liens de réservation Airbnb, chacun avec sa propre politique de confidentialité.',
-      'Pour toute question ou suppression de vos données, écrivez-nous à info@villabellehelene.gr.',
+    updated: 'Dernière mise à jour : novembre 2026',
+    lead: 'Ce site est géré par Belle Helene Villas, Old Hersonissos, Crète. Nous collectons le moins de données possible et ne les utilisons que pour votre demande ou votre séjour.',
+    sections: [
+      { title: 'Aucun suivi', text: 'Nous n’utilisons aucun outil de statistiques, de publicité ou de suivi, et le site ne dépose aucun cookie. Les polices sont servies depuis notre propre site, pas par Google.' },
+      { title: 'Demandes de contact et de réservation', text: 'Lorsque vous envoyez le formulaire de contact ou une demande de réservation, nous recevons votre nom, votre e-mail, les dates et le nombre de personnes choisis, votre téléphone si vous l’indiquez et votre message. Ils nous parviennent par le service Web3Forms (ou, si vous le préférez, par votre propre messagerie). Nous les utilisons uniquement pour vous répondre et organiser votre séjour, jamais à des fins commerciales, et ne les transmettons à personne. Nous ne conservons les échanges liés aux réservations que le temps nécessaire à votre séjour et à nos obligations légales et fiscales.' },
+      { title: 'Calendrier des disponibilités', text: 'Le calendrier indique les nuits déjà réservées, reprises de notre calendrier Airbnb lors de la mise à jour du site. Il ne contient que des dates, jamais de noms ni d’informations sur les voyageurs, et votre navigateur ne contacte pas Airbnb lorsque vous le consultez.' },
+      { title: 'Avis des voyageurs', text: 'Les avis affichés sont des avis publics laissés sur notre annonce Airbnb, présentés uniquement avec le prénom du voyageur et le mois du séjour.' },
+      { title: 'Cartes et liens', text: 'Les fonds de carte sont chargés depuis OpenStreetMap, qui reçoit votre adresse IP mais ne dépose aucun cookie. Les itinéraires à pied et en voiture sont préparés à l’avance : choisir un lieu n’envoie rien à un tiers. Les liens d’itinéraire ouvrent Google Maps et les liens de réservation Airbnb, chacun avec sa propre politique de confidentialité.' },
+      { title: 'Hébergement', text: 'Le site est hébergé sur GitHub Pages. Comme tout serveur web, GitHub peut enregistrer votre adresse IP à des fins de sécurité.' },
+      { title: 'Vos droits', text: 'Vous pouvez à tout moment demander à consulter, corriger ou supprimer les données vous concernant. Écrivez-nous à info@villabellehelene.gr.' },
     ],
   },
 };
@@ -1137,12 +1153,16 @@ const it: UIStrings = {
   },
   privacy: {
     title: 'Informativa sulla privacy',
-    body: [
-      'Questo sito è gestito da Belle Helene Villas, Old Hersonissos, Creta. Rispettiamo la tua privacy e raccogliamo il minor numero possibile di dati.',
-      'Non utilizziamo cookie di analisi o pubblicitari. Il sito stesso non imposta cookie.',
-      'Se usi il modulo di contatto, nome, email e messaggio ci vengono inviati tramite il servizio Web3Forms per permetterci di rispondere. Li usiamo solo per la tua richiesta e non li condividiamo.',
-      'Le tessere della mappa vengono caricate da OpenStreetMap; il tuo indirizzo IP viene così inviato ai loro server, senza cookie. I link alle indicazioni aprono Google Maps e quelli di prenotazione Airbnb, ciascuno con la propria informativa.',
-      'Per domande o per la cancellazione dei tuoi dati, scrivici a info@villabellehelene.gr.',
+    updated: 'Ultimo aggiornamento: novembre 2026',
+    lead: 'Questo sito è gestito da Belle Helene Villas, Old Hersonissos, Creta. Raccogliamo il minor numero possibile di dati e li usiamo solo per la vostra richiesta o il vostro soggiorno.',
+    sections: [
+      { title: 'Nessun tracciamento', text: 'Non usiamo strumenti di statistica, pubblicità o tracciamento, e il sito non imposta cookie. I caratteri sono serviti dal nostro sito, non da Google.' },
+      { title: 'Richieste di contatto e di prenotazione', text: 'Quando inviate il modulo di contatto o una richiesta di prenotazione, riceviamo nome, email, le date e il numero di ospiti scelti, il telefono se lo indicate e il vostro messaggio. Ci arrivano tramite il servizio Web3Forms (oppure, se preferite, tramite il vostro programma di posta). Li usiamo solo per rispondervi e organizzare il soggiorno, mai per marketing, e non li condividiamo con nessuno. Conserviamo la corrispondenza sulle prenotazioni solo per il tempo necessario al soggiorno e agli obblighi di legge e fiscali.' },
+      { title: 'Calendario delle disponibilità', text: 'Il calendario mostra le notti già prenotate, riprese dal nostro calendario Airbnb quando il sito viene aggiornato. Contiene solo date, mai nomi o dati degli ospiti, e il vostro browser non contatta Airbnb quando lo consultate.' },
+      { title: 'Recensioni degli ospiti', text: 'Le recensioni del sito sono recensioni pubbliche lasciate sul nostro annuncio Airbnb, mostrate solo con il nome dell’ospite e il mese del soggiorno.' },
+      { title: 'Mappe e link', text: 'Le tessere della mappa sono caricate da OpenStreetMap, che riceve il vostro indirizzo IP ma non imposta cookie. I percorsi a piedi e in auto sono preparati in anticipo, quindi scegliere un luogo non invia nulla a terzi. I link per le indicazioni aprono Google Maps e quelli per prenotare Airbnb, ciascuno con la propria informativa.' },
+      { title: 'Hosting', text: 'Il sito è ospitato su GitHub Pages. Come ogni server web, GitHub può registrare il vostro indirizzo IP per motivi di sicurezza.' },
+      { title: 'I vostri diritti', text: 'Potete chiedere in qualsiasi momento di vedere, correggere o cancellare i dati che vi riguardano. Scriveteci a info@villabellehelene.gr.' },
     ],
   },
 };
